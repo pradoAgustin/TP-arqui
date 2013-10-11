@@ -25,6 +25,7 @@
 #define POSITION 0xb8000
 #define TAB 8
 int cursor;
+typedef unsigned int size_t;
 
 
 #define ACS_CODE        (ACS_PRESENT | ACS_CSEG | ACS_READ)

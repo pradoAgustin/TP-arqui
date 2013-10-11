@@ -17,18 +17,6 @@ void wait(int time);
 /* Limpia la pantalla */
 void k_clear_screen();
 
-/* borra */
-void backspace();
-
-/* enter */
-void enter();
-
-/* tab*/
-void tab();
-
-/* escribe la pantalla */
-void printf(char*, int);
-
 /* Inicializa la entrada del IDT */
 void setup_IDT_entry (DESCR_INT *item, byte selector, dword offset, byte access,
 			 byte cero);

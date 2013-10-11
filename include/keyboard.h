@@ -19,9 +19,15 @@ char scanCodeToASCII1[0xff] =
  
 };
 
-	
+/* borra */
 void backspace();
+
+/* enter */
 void enter();
+
+/* tab*/
 void tab();
+
+/*scan code to ascii translator*/
 char scanCodeToASCII(char c);
 

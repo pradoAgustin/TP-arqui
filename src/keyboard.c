@@ -21,6 +21,7 @@ void enter(){
 		cursor=0;	
 	}else
 	cursor += 160 - cursor%160;
+printf2("wachiturrOS:~/Arqui/TP-arqui$ ",30);
 }
  
 /***************************************************************
@@ -30,15 +31,22 @@ void tab(){
 	cursor += TAB;
 } 
 
-
-
 /***************************************************************
-*backspace(hay que modificarlo para no poder borrar la linea anterior despues de un enter)
+*backspace
 ****************************************************************/
 void backspace(){
-	cursor -=2;
-	char* videomem = (char *)(POSITION + cursor) ;
-	videomem[0] = ' '; 
-
+int i,puedeBorrar=1;
+	for(i=0;i<25*2*80 ;i++){
+		if(cursor==(30*2+160*i))
+			puedeBorrar=0;
+	}
+	if(puedeBorrar){			
+		cursor -=2;
+		char* videomem = (char *)(POSITION + cursor) ;
+		videomem[0] = ' '; 
+		return;	
+	}	
+		
 }
+
 
