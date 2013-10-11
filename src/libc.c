@@ -1,14 +1,12 @@
 #include "../include/kc.h"
-#define ESC 1
-#define INV 1
 extern char read();
 #include "../include/defs.h"
 
 /***************************************************************
-*  printf
+*  printf (en principio no sirve, hay que reimplementarlo como quiere K&R)
 ****************************************************************/
 
-void printf(char* chain, int quantity)
+void printf2(char* chain, int quantity)
 {
 	int i=0,j=0 ;
 	char* videomem = (char *)(POSITION+ cursor) ;
@@ -69,81 +67,6 @@ void k_clear_screen()
 
 }
 
-/***************************************************************
-* enter
-****************************************************************/
-
-void enter()
-{
-	cursor+=160 - cursor%160;
-}
- 
-/***************************************************************
-*tab
-****************************************************************/
-void tab()
-{
-	cursor += TAB;
-} 
-
-/***************************************************************
-* tratamos de leer e imprimir lo que leemos de teclado
-****************************************************************/
-
-char getchar(){
-	
-
-char scanCodeToASCII[0xff] =
-{    /*  0    1    2    3    4    5    6    7    8    9    A    B    C    D    E     F    */
-/*0*/   INV, ESC, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\'', INV, '\b', '\t',
- 
-/*1*/   'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', INV, '+', '\n', INV, 'a', 's',
- 
-/*2*/   'd', 'f', 'g', 'h', 'j', 'k', 'l', INV, '{', '}', INV, '<', 'z', 'x', 'c', 'v',
- 
-/*3*/   'b', 'n', 'm', ',', '.', '/', INV, '*', INV, ' ', INV, 0xB3, INV, INV, INV, INV,
- 
-/*4*/   INV, INV, INV, INV, INV, INV, INV, '7', '8', '9', '-', '4', '5', '6', '+', '1',
- 
-/*5*/   '2', '3', '0', '.', INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV
- 
-};
-
-char scanCodeToASCII2[0xff] =
-{    /*  0    1    2    3    4    5    6    7    8    9    A    B    C    D    E     F    */
-/*0*/   INV, ESC, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\'', INV, '\b', '\t',
- 
-/*1*/   'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', INV, '+', '\n', INV, 'A', 'S',
- 
-/*2*/   'D', 'F', 'G', 'H', 'J', 'K', 'L', INV, '{', '}', SHIFT, '<', 'Z', 'X', 'C', 'V',
- 
-/*3*/   'B', 'N', 'M', ',', '.', '/', INV, '*', INV, ' ', INV, 0xB3, INV, INV, INV, INV,
- 
-/*4*/   INV, INV, INV, INV, INV, INV, INV, '7', '8', '9', '-', '4', '5', '6', '+', '1',
- 
-/*5*/   '2', '3', '0', '.', INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV
- 
-};
-	
-	while(1){
-		char d;
-		char c = read();
-		if(c-80>0)
-			return 0;
-		d=scanCodeToASCII[c];
-		printf(&d,1);
-	}
-}
-
-
-void backspace()
-{
-	cursor -=2;
-	char* videomem = (char *)(POSITION + cursor) ;
-	videomem[0] = ' '; 
-
-
-}
 
 /***************************************************************
 *setup_IDT_entry

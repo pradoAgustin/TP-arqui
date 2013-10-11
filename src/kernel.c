@@ -51,8 +51,7 @@ cursor=0;
 
 
 /* Llamo a getchar para probar mi codigo, hecho por mi*/
-//char * cadena="Hola mundo";
-//printf(cadena, 10, 0xb8000);
+
 	getchar();
 	
         while(1)

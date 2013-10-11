@@ -23,10 +23,8 @@
 #define ACS_INT         ( ACS_PRESENT | ACS_INT_386 )
 
 #define POSITION 0xb8000
-#define SHIFT 1
 #define TAB 8
-int cursor; 
-
+int cursor;
 
 
 #define ACS_CODE        (ACS_PRESENT | ACS_CSEG | ACS_READ)
