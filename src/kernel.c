@@ -50,13 +50,12 @@ cursor=0;
 	_Sti();
 
 
-/* Llamo a getchar para probar mi codigo, hecho por mi*/
-	printf2("wachiturrOS:~/Arqui/TP-arqui$ ",30);	
-	unsigned long character = measure_ram();
-	//printf2(character,30); debo modificar printf para que pueda imprimir unsigned longs!
-	//printf2("ya imprimi la memoria ",15);
+/* Llamo a getchar para probar mi codigo, hecho por mi*/	
+	int character = (int)measure_ram();
+	//printf("%d",character); //debo modificar printf para que pueda imprimir unsigned longs!
+	prompt();
 	getchar();
-	
+
         while(1)
         {
 		

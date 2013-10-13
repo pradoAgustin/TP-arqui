@@ -21,7 +21,7 @@ void enter(){
 		cursor=0;	
 	}else
 	cursor += 160 - cursor%160;
-printf2("wachiturrOS:~/Arqui/TP-arqui$ ",30);
+prompt();
 }
  
 /***************************************************************
@@ -47,6 +47,14 @@ int i,puedeBorrar=1;
 		return;	
 	}	
 		
+}
+
+
+/***************************************************************
+*prompt
+****************************************************************/
+void prompt(void){
+	printf("%s","wachiturrOS:~/Arqui/TP-arqui$ ");
 }
 
 

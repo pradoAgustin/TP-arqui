@@ -1,6 +1,7 @@
 #include "../include/stdio.h"
-#include "../include/defs.h"
+#include "../include/stdlib.h"
 #include "../include/kc.h"
+#include "../include/stdarg.h"
 extern char read();
 
 
@@ -9,9 +10,9 @@ extern char read();
 ****************************************************************/
 
 /***************************************************************
-*  printf2 (en principio no sirve, hay que reimplementarlo como quiere K&R)
+*  printf2 (bueno mientras duro)
 ****************************************************************/
-
+/*
 void printf2(char* chain, int quantity)
 {
 	int i=0,j=0 ;
@@ -50,7 +51,7 @@ void printf2(char* chain, int quantity)
 
 }
 
-
+*/
 /***************************************************************
 * tratamos de leer e imprimir lo que leemos de teclado
 ****************************************************************/
@@ -65,7 +66,7 @@ char getchar(){
 			return 0;
 		
 		d=scanCodeToASCII(c);
-		printf2(&d,1);
+		printf("%c",d);
 	}
 }
 
@@ -82,10 +83,50 @@ int getc(FILE * stream){
 /***************************************************************
 *  putc (si)
 ****************************************************************/
-int putc(int c, FILE* stream){
+int putc(int c, FILE * stdout){
+	
+	int i=0,j=0 ;
+		if(c=='\b')
+			{	
+			backspace();
+			return;
+			}
+		if(c=='\n')
+			{	
+			enter();
+			return;
+			}
+		if(c=='\t')
+			{	
+			tab();
+			return;
+			}
 
-;
+		if (c!=0){
+		
+			stdout[i] = c;
+			i++;
+			j++;
+			stdout[i] = WHITE_TXT;
+			i++;
+			}
+			else
+				return ;
+		
+	
+		cursor+=i;
 
+}
+
+/***************************************************************
+*  puts (si)
+****************************************************************/
+int puts( FILE * stream){
+
+	while(*stream){
+		putc(*stream, (char*)(POSITION+cursor));
+		stream++;	
+	}
 }
 
 /***************************************************************
@@ -107,47 +148,42 @@ int scanf(const char * format, ...){
 /***************************************************************
 *  printf (si)(basada en minprintf de K&R cap 7, pag 172, 173)
 ****************************************************************/
-int printf(const char * format, ...){}
 
-void va_start(char * ap,char * format);
-void * va_arg(char *ap,void * palabra);
-typedef char * va_list;
-/*
-//minprintf: printf minima con lista variable de argumentos 
-void minprintf(char * fmt){
+int printf( char * fmt,...){
 	va_list ap;//apunta a cada arg sin nombre en orden
 	char *p, *sval;
-	int ival;
-	double dval;
+	int ival,base=10;
+	char s[MAX_LENGTH];
 	va_start(ap, fmt);//hace que ap apunte al 1er arg sin nombre
 	for(p=fmt; *p; p++){
 		if(*p!='%'){
-			printf2(*p,1);//putchar(*p);//necesitaria hacer putchar LPM
+			putc(*p,(char*)(POSITION+cursor));
 			continue;	
 		}
 			switch(*++p){
 				case 'd':
 					ival= va_arg(ap,int);
-					printf("%d",ival);
+					itoa(ival, s, base);
+					puts(s);
 					break;
-				case 'f':
-					dval= va_arg(ap,double);
-					printf("%f",dval);
+				case 'x':
+					ival= va_arg(ap,int);
+					itoa(ival, s, 16);
+					puts(s);
+					break;
+				case 'c':
+					ival= va_arg(ap,int);					
+					putc(ival, (char*)(POSITION+cursor));
 					break;
 				case 's':
 					for(sval=va_arg(ap,char*);*sval;sval++)
-						printf2(*sval,1);//putchar(*sval);
+						putc(*sval, (char*)(POSITION+cursor) );
 					break;	
 				default:
-					putchar(*p);
+					putc(*p, (char*)(POSITION+cursor));
 					break;
 			}
 		}
 		va_end(ap); //limpia cuando todo esta hecho
-
+	return 0;
 }
-
-
-*/
-
-//va_start(ap, fmt);

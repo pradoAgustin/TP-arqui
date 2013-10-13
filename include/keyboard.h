@@ -31,3 +31,5 @@ void tab();
 /*scan code to ascii translator*/
 char scanCodeToASCII(char c);
 
+/*imprime el prompt*/
+void prompt(void);
