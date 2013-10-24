@@ -19,21 +19,7 @@ char scanCodeToASCII1[0xff] =
  
 };
 
-char scanCodeToASCII2[0xff] =
-{    /*  0    1    2    3    4    5    6    7    8    9    A    B    C    D    E     F    */
-/*0*/   INV, ESC, '!', '@', '#', '$', '%', '&', '/', '(', ')', '=', '\'', INV, '\b', '\t',
- 
-/*1*/   'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', INV, '+', '\n', INV, 'A', 'S',
- 
-/*2*/   'D', 'F', 'G', 'H', 'J', 'K', 'L', INV, '{', '}', INV, '<', 'Z', 'X', 'C', 'V',
- 
-/*3*/   'B', 'N', 'M', ',', '.', '/', INV, '*', INV, ' ', INV, 0xB3, INV, INV, INV, INV,
- 
-/*4*/   INV, INV, INV, INV, INV, INV, INV, '7', '8', '9', '-', '4', '5', '6', '+', '1',
- 
-/*5*/   '2', '3', '0', '.', INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV
- 
-};
+
 
 
 /* borra */

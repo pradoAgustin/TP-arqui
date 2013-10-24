@@ -68,10 +68,12 @@ char getchar(){
 		
 		if(c==(char)0x36 && shift==0 ){
 			shift=1; //down code
+			printf("hola");
 			return 0;
 			}
 		if(c==(char)0xB6  ) { 
 			shift=0; //up code
+			printf("sale");
 			return 0;
 			}
 		

@@ -45,7 +45,7 @@ return;
 /**********************************************
 * memory functions
 *************************************************/
-/*void * calloc(size_t nitems, size_t size){
+void * calloc(size_t nitems, size_t size){
 int i;
 void * a;
 a=malloc(size);
@@ -64,4 +64,4 @@ buffer
 
 
 } 
-void *realloc(void *ptr, size_t size){} */
+void *realloc(void *ptr, size_t size){} 
