@@ -26,7 +26,7 @@ char scanCodeToASCIIshifted(char c){
 
 void enter(){
 	if(cursor > 75*25*2){
-		k_clear_screen(); 
+		k_clear_screen2(); 
 		cursor=160*9;	
 		printf("________________________________________________________________________________");
 		cursor=160*10;

@@ -11,7 +11,7 @@ char scanCodeToASCII1[0xff] =
  
 /*2*/   'd', 'f', 'g', 'h', 'j', 'k', 'l', INV, '{', '}', INV, '<', 'z', 'x', 'c', 'v',
  
-/*3*/   'b', 'n', 'm', ',', '.', '/', INV, '*', INV, ' ', INV, 0xB3, INV, INV, INV, INV,
+/*3*/   'b', 'n', 'm', ',', '.', '/', INV, '*', INV, ' ', INV, INV, INV, INV, INV, INV,
  
 /*4*/   INV, INV, INV, INV, INV, INV, INV, '7', '8', '9', '-', '4', '5', '6', '+', '1',
  
@@ -27,7 +27,7 @@ char scanCodeToASCII2[0xff] =
  
 /*2*/   'D', 'F', 'G', 'H', 'J', 'K', 'L', INV, '{', '}', INV, '<', 'Z', 'X', 'C', 'V',
  
-/*3*/   'B', 'N', 'M', ',', '.', '/', INV, '*', INV, ' ', INV, 0xB3, INV, INV, INV, INV,
+/*3*/   'B', 'N', 'M', ',', '.', '/', INV, '*', INV, ' ', INV, INV, INV, INV, INV, INV,
  
 /*4*/   INV, INV, INV, INV, INV, INV, INV, '7', '8', '9', '-', '4', '5', '6', '+', '1',
  

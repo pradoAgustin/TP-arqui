@@ -1,6 +1,9 @@
 #include "../include/kasm.h"
 #include "../include/defs.h"
-int shift;
+int r_shift;
+int l_shift;
+int l_control;
+int r_control;
 DESCR_INT idt[0xA];			/* IDT de 10 entradas*/
 IDTR idtr;				/* IDTR */
 
@@ -26,8 +29,9 @@ Punto de entrada de cóo C.
 
 kmain() 
 {
+
 cursor=160*10;
-shift=0;
+r_shift=0,l_shift=0, l_control=0, r_control=0;
         int i,num,j,w;
 
 /* Borra la pantalla. */ 

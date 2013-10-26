@@ -57,7 +57,7 @@ void k_clear_screen2()
 {
 	char *vidmem = (char *) 0xb8000;
 	unsigned int i=160*10;
-	while(i < (80*25*2))
+	while(i < (80*15*2))
 	{	vidmem[i]= ' ';
 		i++;
 		vidmem[i]=WHITE_TXT;

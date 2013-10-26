@@ -16,7 +16,6 @@ char scanCodeToASCII(char c){
 ****************************************************************/
 
 char scanCodeToASCIIshifted(char c){
-	printf("entre a shifted");
 	return scanCodeToASCII2[c];
 }
 
