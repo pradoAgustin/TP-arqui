@@ -1,7 +1,7 @@
 extern char read();
 #include "../include/defs.h"
 #include "../include/keyboard.h"
-
+int prompt2;
 
 /***************************************************************
 *scanCodeToASCII
@@ -26,13 +26,13 @@ char scanCodeToASCIIshifted(char c){
 
 void enter(){
 	if(cursor > 75*25*2){
-		k_clear_screen2(); 
+		k_scroll();//scrolleo 
 		cursor=160*9;	
 		printf("________________________________________________________________________________");
-		cursor=160*10;
+		cursor=160*24;
 	}else
 	cursor += 160 - cursor%160;
-prompt();
+	prompt();
 }
  
 /***************************************************************
@@ -51,7 +51,7 @@ int i,puedeBorrar=1;
 		if(cursor==(13*2+160*i))
 			puedeBorrar=0;
 	}
-	if(puedeBorrar){			
+	if(puedeBorrar || !prompt2){			
 		cursor -=2;
 		char* videomem = (char *)(POSITION + cursor) ;
 		videomem[0] = ' '; 
@@ -59,23 +59,13 @@ int i,puedeBorrar=1;
 	}	
 		
 }
-/***************************************************************
-*shifted
-****************************************************************/
-//int shifted()
-
-
-
-
-
-
-
 
 /***************************************************************
 *prompt
 ****************************************************************/
 void prompt(void){
 	printf("%s","wachiturrOS: ");
+	prompt2=1;
 }
 
 

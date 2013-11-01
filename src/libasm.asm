@@ -3,7 +3,8 @@ GLOBAL  _int_08_hand
 GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
 GLOBAL _int_09_hand
-
+GLOBAL outport32
+GLOBAL inport32
 EXTERN  int_08
 EXTERN  int_09
 
@@ -81,6 +82,32 @@ _int_09_hand:			    ; Handler de INT9 (Teclado)
     popf                    ; Restauro todos los flags.
     popad                   ; Restauro todos los registros.
     iretd
+    
+outport32:
+    push ebp
+    mov ebp, esp
+    
+    mov dx,word[ebp + 8]    ;en EAX pongo el primer parametro port
+    mov eax,dword[ebp + 12] ;en EBX pongo el segundo parametro source
+    out dx, eax
+
+    mov esp, ebp
+    pop ebp
+    ret
+    
+inport32:
+    push ebp
+    mov ebp, esp
+    
+    mov eax, 0
+    mov dx, word[ebp + 8]  ;en EAX pongo el primer parametro port
+    in eax, dx
+    
+    mov esp,ebp
+    pop ebp
+    ret
+
+    
 
 ; Debug para el BOCHS, detiene la ejecució; Para continuar colocar en el BOCHSDBG: set $eax=0
 ;

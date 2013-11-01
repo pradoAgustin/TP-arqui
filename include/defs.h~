@@ -25,7 +25,8 @@
 #define POSITION 0xb8000
 #define TAB 8
 int cursor;
-
+char STDOUT1 [10*160] ={};
+char STDOUT2 [15*160]={};
 
 #define ACS_CODE        (ACS_PRESENT | ACS_CSEG | ACS_READ)
 #define ACS_DATA        (ACS_PRESENT | ACS_DSEG | ACS_WRITE)

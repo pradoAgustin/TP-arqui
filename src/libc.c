@@ -1,27 +1,6 @@
 #include "../include/kc.h"
 
 
-/***************************************************************
-ver cantidad de memoria del sistema
-****************************************************************/
-unsigned long measure_ram(void)
-{
-	int * pos = (int*)0x100000;
-	do
-	{
-		pos += 0x1000; //0001 0000 0000 0000 son 4k
-	} while (is_available(pos));
-	
-	return (unsigned long)pos;
-}
-
-int is_available(int * pos)
-{
-	*pos = CONTROL_INT;
-	if (*pos == CONTROL_INT)
-		return TRUE;
-	return FALSE;
-}
 
 
 /***************************************************************
@@ -35,9 +14,9 @@ void k_clear_screen()
 	int h=0;
 	char *vidmem = (char *) 0xb8000;
 	unsigned int i=0;
-	//char* character =(char *) measure_ram();
+
 	while(i < (80*25*2))
-	{//printf2(character, 25);
+	{
 
 		vidmem[i]= ' ';
 		i++;
@@ -48,20 +27,20 @@ void k_clear_screen()
 
 }
 /***************************************************************
-*k_clear_screen2
-*
-* Borra la pantalla en modo texto color.//la parte de abajo solo
+*k_scroll
+* scrolleaaa.//la parte de abajo solo
 ****************************************************************/
 
-void k_clear_screen2() 
+void k_scroll() 
 {
 	char *vidmem = (char *) 0xb8000;
 	unsigned int i=160*10;
 	while(i < (80*25*2))
-	{	vidmem[i]= ' ';
+	{	vidmem[i]= vidmem[i+160];
 		i++;
 		vidmem[i]=WHITE_TXT;
 		i++;
+		
 	}
 	
 
