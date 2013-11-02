@@ -55,6 +55,7 @@ int i,puedeBorrar=1;
 		cursor -=2;
 		char* videomem = (char *)(POSITION + cursor) ;
 		videomem[0] = ' '; 
+		update_cursor();
 		return;	
 	}	
 		

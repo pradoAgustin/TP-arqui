@@ -2,8 +2,6 @@
 #include "../include/stdlib.h"
 #include "../include/kc.h"
 #include "../include/stdarg.h"
-char STDOUT1 [10*160];
-char STDOUT2 [15*160];
 int prompt2;
 
 
@@ -17,75 +15,48 @@ wiki.osdev.org/Inline_Assembly
 ****************************************************************/
 
 char getchar(){
-return getBuffer();
+	return getBuffer();
 }
-
-
-
 
 /***************************************************************
 *  getc (si)
 ****************************************************************/
 int getc(FILE * stream){
-;
-
-
-
+	;
 }
+
 /***************************************************************
 *  putc (si)
 ****************************************************************/
 int putc(int c, FILE * stdout){
 	
 	int i=0 ;
-		if(c=='\b')
-			{	
-			backspace();
-			return;
-			}
-		if(c=='\n')
-			{	
-			enter();
-			return;
-			}
-		if(c=='\t')
-			{	
-			tab();
-			return;
-			}
-//if(stdout==(FILE *)1){
-		if (c!=0){
-		
-			stdout[i] = c;// NO antes le pasaban POSITION +cursor y eso lo usaba con char*
-		i++;//NO
-		stdout[i] = WHITE_TXT;//NO
-		i++;//NO
-			// __write(STDOUT1, const void* buffer, size_t count);
-	//if((char*)0==stream){
-		//stream[POSITION+cursor+i]=c;
-		//i++;
-		//stream[POSITION+cursor+i]=WHITE_TXT;
-		//i++;
-	//}		
-	
-	//if((char *)2==stream){
-		//cursor=22;
-		//stream[POSITION+cursor+i]=c;
-		//i++;
-		//stream[POSITION+cursor+i]=WHITE_TXT;
-		//i++;
-		//cursor+=i;
-	//}
-	
-	
-	//debo llamar al write(); write chupa del buffer y escupe en pantalla
-			}
-			else
-				return ;
-		
-	
-		cursor+=i;
-	//}
+	if(c=='\b')
+	{	
+		backspace();
+		return;
+	}
+	if(c=='\n')
+	{	
+		enter();
+		return;
+	}
+	if(c=='\t')
+	{	
+		tab();
+		return;
+	}
+	update_cursor();
+	if(stdout==(FILE *)1 && c!=0){
+		((char *)(POSITION+cursor))[i]=c;
+		i++;
+		((char *)(POSITION+cursor))[i]=WHITE_TXT;
+		i++;
+		update_cursor();
+	}else
+		return ;
+
+cursor+=i;
 }
 
 /***************************************************************
@@ -94,7 +65,7 @@ int putc(int c, FILE * stdout){
 int puts( FILE * stream){
 
 	while(*stream){
-		putc(*stream, (char *)POSITION+cursor);//(char*)2);
+		putc(*stream, (char *)1);//POSITION+cursor);//(char*)2);
 		stream++;	
 	}
 }
@@ -212,12 +183,11 @@ int scanf(const char * format, ...){
 /***************************************************************
 * Salida con formato
 ****************************************************************/
-
 /***************************************************************
 *  printf (si)(basada en minprintf de K&R cap 7, pag 172, 173)
 ****************************************************************/
 
-int printf( char * fmt,...){
+int printf( char * fmt, ...){
 	va_list ap;//apunta a cada arg sin nombre en orden
 	char *p, *sval;
 	int ival;
@@ -225,34 +195,34 @@ int printf( char * fmt,...){
 	va_start(ap, fmt);//hace que ap apunte al 1er arg sin nombre
 	for(p=fmt; *p; p++){
 		if(*p!='%'){
-			putc(*p,(char*)(POSITION+cursor));//NOOOOOOOOOOO
+			putc(*p,(char*)1);//(POSITION+cursor));//NOOOOOOOOOOO
 			continue;	
 		}
-			switch(*++p){
-				case 'd':
-					ival= va_arg(ap,int);
-					itoa(ival,s,10);
-					puts(s);
+		switch(*++p){
+			case 'd':
+				ival= va_arg(ap,int);
+				itoa(ival,s,10);
+				puts(s);
+				break;
+			case 'x':
+				ival= va_arg(ap,int);
+				itoa(ival,s,16);
+				puts(s);
+				break;
+			case 'c':
+				ival= va_arg(ap,int);	
+				if(cursor == (80*2*25)){cursor=80*24*2;k_scroll();prompt2=0;}				
+					putc(ival,(char*)1);//(POSITION+cursor));//NOOOOOOOOOOOOOO
 					break;
-				case 'x':
-					ival= va_arg(ap,int);
-					itoa(ival,s,16);
-					puts(s);
-					break;
-				case 'c':
-					ival= va_arg(ap,int);	
-					if(cursor == (80*2*25)){cursor=80*24*2;k_scroll();prompt2=0;}				
-					putc(ival,(char*)(POSITION+cursor));//NOOOOOOOOOOOOOO
-					break;
-				case 's':
-					for(sval=va_arg(ap,char*);*sval;sval++)
-						putc(*sval, (char*)(POSITION+cursor) );//NOOOOOOOOOOOOOOOOOOOOOOOOO
-					break;
-				default:
-					putc(*p,(char*)(POSITION+cursor));//NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-					break;
+			case 's':
+				for(sval=va_arg(ap,char*);*sval;sval++)
+					putc(*sval, (char*)1);//(POSITION+cursor) );//NOOOOOOOOOOOOOOOOOOOOOOOOO
+				break;
+			default:
+				putc(*p,(char*)1);//(POSITION+cursor));//NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+				break;
+				}
 			}
-		}
 		va_end(ap); //limpia cuando todo esta hecho
-	return 0;
-}
+		return 0;
+	}

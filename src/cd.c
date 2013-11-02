@@ -1,4 +1,5 @@
 #include "../include/defs.h"
+
 #define BIT31 0x80000000 
 /* Siempre en 1 */
 #define BITS30A24 0x7F000000
@@ -68,7 +69,7 @@ PCI_TABLE pciTable[] = {
     {0x8086, 0x7113, "Intel Corporation", "82371AB/EB/MB PIIX4 ACPI"},  
     {0x8086, 0x2829, "Intel Corporation", "82801HM/HEM (ICH8M/ICH8M-E) SATA Controller [AHCI mode]"}      
 };
-    
+/*    
 int dimPciTable = sizeof(pciTable)/sizeof(PCI_TABLE);
 
 void printPci(unsigned short vendorId, unsigned short deviceId) {
@@ -81,8 +82,8 @@ void printPci(unsigned short vendorId, unsigned short deviceId) {
             return ;
         }
     }
-}
-        
+}*/
+  /*      
 void getPci(void) {
     unsigned short vendorId, deviceId;
     int bus, device, reg = 0, mask, data, fun = 0, prints = 0;
@@ -106,3 +107,7 @@ void getPci(void) {
             }
         }
 }
+*/
+
+
+

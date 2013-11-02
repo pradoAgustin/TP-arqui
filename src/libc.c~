@@ -27,12 +27,11 @@ void k_clear_screen()
 
 }
 /***************************************************************
-*k_clear_screen2
-*
-* Borra la pantalla en modo texto color.//la parte de abajo solo
+*k_scroll
+* scrolleaaa.//la parte de abajo solo
 ****************************************************************/
 
-void k_clear_screen2() 
+void k_scroll() 
 {
 	char *vidmem = (char *) 0xb8000;
 	unsigned int i=160*10;

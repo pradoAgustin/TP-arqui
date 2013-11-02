@@ -13,4 +13,5 @@ gcc -c ../src/libc.c  -o libc.o -fno-builtin -fno-stack-protector
 gcc -c ../src/syscalls.c  -o syscalls.o -fno-builtin -fno-stack-protector
 gcc -c ../src/buffer.c  -o buffer.o -fno-builtin -fno-stack-protector
 gcc -c ../src/cd.c  -o cd.o -fno-builtin -fno-stack-protector
-ld -T ../src/link.ld -o kernel.bin kernel.o kstart.o libc.o libasm.o read.o stdio.o keyboard.o string.o stdlib.o ctype.o syscalls.o buffer.o cd.o
+gcc -c ../src/video.c  -o video.o -fno-builtin -fno-stack-protector
+ld -T ../src/link.ld -o kernel.bin kernel.o kstart.o libc.o libasm.o read.o stdio.o keyboard.o string.o stdlib.o ctype.o syscalls.o buffer.o cd.o video.o
