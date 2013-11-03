@@ -1,8 +1,5 @@
 #include "../include/stdlib.h"
 
-
-
-
 /**********************************************
 * string functions
 *************************************************/
@@ -18,7 +15,6 @@ n=0;
 	return n;
 	}
 }
-
 
 /**********************************************
 * itoa, convierte numero en cualquier base en string 
@@ -90,6 +86,10 @@ if(base==16){
 
 	if (sign < 0)
 		str[i++] = '-';
+	str[i]='x';
+	i++;
+	str[i]='0';
+	i++;
 	str[i] = '\0';
 	reverse(str, i);
 return;

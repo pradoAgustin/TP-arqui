@@ -12,6 +12,8 @@ int Bloq_Mayus;
 int tickpos=640;
 int prompt2;
 int registers[20];
+int flags[5];
+
 
 void int_08() {
 
@@ -21,43 +23,53 @@ void int_08() {
 }
 
 void int_09(){
-char *video = (char *) 0xb8000;
+		flags[0]=read_flags();
+		registers[0]= read_register_eax();
+		registers[1]= read_register_ebx();
+		registers[2]= read_register_ecx();
+		registers[3]= read_register_edx();
+		registers[4]= read_register_eax();//no lo guarda en stack
+		registers[5]= read_register_ebp();
+		registers[6]= read_register_esi();
+		registers[7]= read_register_edi();
+			
+	// EDI, ESI , EBP, EBX. EDX, ECX, EAX, 
 			//acceder a la rutina de interrupcion a su stack 
-			asm("movl %%eax, %%eax"
-				:"=a" (registers[0]));//EAX
-				//ctrl R mi proceso esta con el calculo matematico, datos relativos a mi handler de write esta mal
-			asm("movl %%ebx, %%ebx"
-				:"=b" (registers[1]));//EBX
-			asm("movl %%ecx, %%ecx"
-				:"=c" (registers[2]));//ECX
-			asm("movl %%edx, %%edx"
-				:"=d" (registers[3]));//EDX	
-			asm("movl %%esp, %%eax"
-				:"=a" (registers[4]));//ESP
-			asm("movl %%ebp, %%eax"
-				:"=a" (registers[5]));//EBP
-			asm("movl %%esi, %%esi"
-				:"=S" (registers[6]));//ESI
-			asm("movl %%edi, %%edi"
-				:"=D" (registers[7]));//EDI
-			asm("xorl %%eax, %%eax\n"
-				"movw %%cs, %%eax" //http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html
-				:"=a" (registers[8]));//CS
-			asm("xorl %%eax, %%eax\n"
-				"movw %%ss,%%ax "
-				:"=a" (registers[9]));//SS
-			asm("xorl %%eax, %%eax\n"
-				"movw %%ds,%%ax "
-				:"=a" (registers[10]));//DS
-			asm("xorl %%eax, %%eax\n"
-				"movw %%es,%%ax "
-				:"=a" (registers[11]));//ES
-			asm("xorl %%eax, %%eax\n"
-				"movw %%fs,%%ax "
-				:"=a" (registers[12]));//FS
-			asm("xorl %%eax, %%eax\n"
-				"movw %%gs,%%ax "
-				:"=a" (registers[13]));//GS
+			// asm("movl %%eax, %%eax"
+			// 	:"=a" (registers[0]));//EAX
+			// 	//ctrl R mi proceso esta con el calculo matematico, datos relativos a mi handler de write esta mal
+			// asm("movl %%ebx, %%ebx"
+			// 	:"=b" (registers[1]));//EBX
+			// asm("movl %%ecx, %%ecx"
+			// 	:"=c" (registers[2]));//ECX
+			// asm("movl %%edx, %%edx"
+			// 	:"=d" (registers[3]));//EDX	
+			// asm("movl %%esp, %%eax"
+			// 	:"=a" (registers[4]));//ESP
+			// asm("movl %%ebp, %%eax"
+			// 	:"=a" (registers[5]));//EBP
+			// asm("movl %%esi, %%esi"
+			// 	:"=S" (registers[6]));//ESI
+			// asm("movl %%edi, %%edi"
+			// 	:"=D" (registers[7]));//EDI
+			// asm("xorl %%eax, %%eax\n"
+			// 	"movw %%cs, %%eax" //http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html
+			// 	:"=a" (registers[8]));//CS
+			// asm("xorl %%eax, %%eax\n"
+			// 	"movw %%ss,%%ax "
+			// 	:"=a" (registers[9]));//SS
+			// asm("xorl %%eax, %%eax\n"
+			// 	"movw %%ds,%%ax "
+			// 	:"=a" (registers[10]));//DS
+			// asm("xorl %%eax, %%eax\n"
+			// 	"movw %%es,%%ax "
+			// 	:"=a" (registers[11]));//ES
+			// asm("xorl %%eax, %%eax\n"
+			// 	"movw %%fs,%%ax "
+			// 	:"=a" (registers[12]));//FS
+			// asm("xorl %%eax, %%eax\n"
+			// 	"movw %%gs,%%ax "
+			// 	:"=a" (registers[13]));//GS
 			//codigo divino para ctrl R y mayusculas
 	
   //guardo en assembler los registros
@@ -74,13 +86,8 @@ Punto de entrada de cóo C.
 
 kmain() 
 {cursor=0;
-//char * STDOUT1 = POSITION + cursor;  // INICIALIZO MI PRIMER FILE DESCRIPTOR
-cursor=15*160;
-//char STDOUT2 =POSITION +cursor;  // INICIALIZO MI SEGUNDO FILE DESCRIPTOR
-cursor=160*10;
 r_shift=0,l_shift=0, l_control=0, r_control=0,prompt2=1;
 int i,num,j,w,z,q;
-
 
 /* Borra la pantalla. */ 
 
@@ -108,29 +115,7 @@ int i,num,j,w,z,q;
 	_Sti();
 
 
-
-
-
 /* Llamo a getchar para probar mi codigo, hecho por mi*/	
-cursor=160*9;
-printf("________________________________________________________________________________");
-cursor=160*10;
-//	prompt();
-
-
-cursor=0;
-//for(z=0;z<11;z++){
-	//for(q=0;q<80;q++){
-		//STDOUT1[z][q]='4';
-		//printf("%c",STDOUT1[z][q]);
-		
-//	}
-	
-//}
-//cursor=160*10;
-
-//PRINT SCREEN
-
 cursor=160*9;
 printf("________________________________________________________________________________");
 cursor=160*10;
@@ -138,9 +123,6 @@ prompt();
 update_cursor();
 
 
-
-//while(z<296){printf("hola");z++;}
-//getPci();
         while(1)
         {
 		

@@ -7,6 +7,15 @@ GLOBAL outportb32
 GLOBAL inportb32
 GLOBAL outportb
 GLOBAL inportb
+GLOBAL read_flags
+GLOBAL read_register_eax
+GLOBAL read_register_ebx
+GLOBAL read_register_ecx
+GLOBAL read_register_edx
+GLOBAL read_register_esi
+GLOBAL read_register_edi
+GLOBAL read_register_ebp
+
 EXTERN  int_08
 EXTERN  int_09
 
@@ -99,6 +108,90 @@ outportb:
     mov esp, ebp
     pop ebp
     ret
+
+
+read_flags:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+12]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_edi:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+16]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_esi:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+20]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_ebp:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+24]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_ebx:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+28]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_edx:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+32]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_ecx:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+36]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_eax:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+40]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+
+
 
 inportb:
     push ebp

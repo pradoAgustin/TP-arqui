@@ -32,6 +32,9 @@ int registers[20];
 * - Cantidad
 *
 **/
+void hola(){int i;
+ while(i<10){
+ 	printf("hola\n");}}
 size_t __write(int fd, const void* buffer, size_t count){
 	
 		char d,a;
@@ -42,6 +45,7 @@ size_t __write(int fd, const void* buffer, size_t count){
 			//codigo divino para ctrl R y mayusculas
 		if(c==(char)0x36 && r_shift==0 ){//00110110
 			r_shift=1; //right shift down code
+			hola();
 			return 0;
 			}
 		if(c==(char)0xB6 && r_shift==1  ) { //10110110
