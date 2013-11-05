@@ -1,8 +1,5 @@
 #include "../include/kc.h"
 
-
-
-
 /***************************************************************
 *k_clear_screen
 *
@@ -17,16 +14,29 @@ void k_clear_screen()
 
 	while(i < (80*25*2))
 	{
+		vidmem[i]= ' ';
+		i++;
+		vidmem[i]=WHITE_TXT;
+		i++;
+	}
+}
+
+
+void k_clear_upper_screen() 
+{
+	int h=0;
+	char *vidmem = (char *) 0xb8000;
+	unsigned int i=0;
+
+	while(i < (80*9*2))
+	{
 
 		vidmem[i]= ' ';
 		i++;
 		vidmem[i]=WHITE_TXT;
 		i++;
 	}
-	
-
 }
-
 
 /***************************************************************
 *setup_IDT_entry
@@ -47,6 +57,3 @@ void setup_IDT_entry (DESCR_INT *item, byte selector, dword offset, byte access,
   item->access = access;
   item->cero = cero;
 }
-
-
-

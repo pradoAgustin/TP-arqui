@@ -1,25 +1,21 @@
 #include "../include/kasm.h"
 #include "../include/defs.h"
 #include "../include/buffer.h"
-int r_shift;
-int l_shift;
-int l_control;
-int r_control;
+
 DESCR_INT idt[0xA];			/* IDT de 10 entradas*/
 IDTR idtr;				/* IDTR */
 int cursoraux;
-int Bloq_Mayus;
 int tickpos=640;
 int prompt2;
 int registers[20];
 int flags[5];
+int i;
 
 
 void int_08() {
 
     char *video = (char *) 0xb8000;
     //video[tickpos+=2]='*';
-
 }
 
 void int_09(){
@@ -28,7 +24,7 @@ void int_09(){
 		registers[1]= read_register_ebx();
 		registers[2]= read_register_ecx();
 		registers[3]= read_register_edx();
-		registers[4]= read_register_eax();//no lo guarda en stack
+		registers[4]= read_register_esp();
 		registers[5]= read_register_ebp();
 		registers[6]= read_register_esi();
 		registers[7]= read_register_edi();
@@ -75,8 +71,9 @@ void int_09(){
   //guardo en assembler los registros
 //__save_registers();
     __write(1,1,1);
-	
-	__read(1,1,1);
+shell();
+	//__read(1,1,1);
+	//shell();
 }
 
 /**********************************************
@@ -86,9 +83,10 @@ Punto de entrada de cóo C.
 
 kmain() 
 {cursor=0;
-r_shift=0,l_shift=0, l_control=0, r_control=0,prompt2=1;
-int i,num,j,w,z,q;
-
+prompt2=1;
+i=0;
+ //initializeBuffer();
+ initializeSpecialKeys();
 /* Borra la pantalla. */ 
 
 	k_clear_screen();
@@ -121,11 +119,11 @@ printf("________________________________________________________________________
 cursor=160*10;
 prompt();
 update_cursor();
-
+//shell();
 
         while(1)
         {
-		
+		//shell();
         }
 	
 }

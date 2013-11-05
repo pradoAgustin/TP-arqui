@@ -15,6 +15,7 @@ GLOBAL read_register_edx
 GLOBAL read_register_esi
 GLOBAL read_register_edi
 GLOBAL read_register_ebp
+GLOBAL read_register_esp
 
 EXTERN  int_08
 EXTERN  int_09
@@ -145,6 +146,16 @@ read_register_ebp:
     mov ebp, esp
 
     mov eax, [esp+24]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_esp:
+    push ebp
+    mov ebp, esp
+
+    mov eax, esp
 
     mov esp, ebp
     pop ebp

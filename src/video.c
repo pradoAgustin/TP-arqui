@@ -38,9 +38,9 @@ print_registers(){
 			cursor=160;
 			printf("ebx  \t%x \t%d \t\t\t\t\tss  \t%x %d",registers[1],registers[1], registers[9],registers[9]);
 			cursor=320;
-			printf("ecx  \t%x \t\t%d \t\t\t\t\t\tds  \t%x %d",registers[2], registers[2], registers[10],registers[10]);
+			printf("ecx  \t%x \t%d \t\t\t\t\t\tds  \t%x %d",registers[2], registers[2], registers[10],registers[10]);
 			cursor=480;
-			printf("edx  \t%x    \t%d\t\t\t\t\t\tes  \t%x %d",registers[3], registers[3], registers[11],registers[11]);
+			printf("edx  \t%x \t%d\t\t\t\t\t\tes  \t%x %d",registers[3], registers[3], registers[11],registers[11]);
 			cursor=640;
 			printf("esi  \t%x \t%d \t\t\t\t\tfs  \t%x %d",registers[6], registers[6],registers[12],registers[12]);
 			cursor=800;

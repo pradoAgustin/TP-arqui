@@ -1,8 +1,9 @@
 extern char read();
 #include "../include/defs.h"
 #include "../include/keyboard.h"
+#include "../include/buffer.h"
 int prompt2;
-
+buffer buf;
 /***************************************************************
 *scanCodeToASCII
 ****************************************************************/

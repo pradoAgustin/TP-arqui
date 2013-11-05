@@ -2,9 +2,11 @@
 #include "../include/stdlib.h"
 #include "../include/kc.h"
 #include "../include/stdarg.h"
+#include "../include/buffer.h"
 int prompt2;
-
-
+#define BUFFER_SIZE 20
+#define EOF -1
+buffer buf;
 /***************************************************************
 *  Funciones de entrada y salida de caracteres
 ****************************************************************/
@@ -15,7 +17,8 @@ wiki.osdev.org/Inline_Assembly
 ****************************************************************/
 
 char getchar(){
-	return getBuffer();
+	char c= getBuffer();
+	return c;
 }
 
 /***************************************************************
@@ -33,17 +36,18 @@ int putc(int c, FILE * stdout){
 	int i=0 ;
 	if(c=='\b')
 	{	
-		backspace();
+		backspace();//deberia retrasar el buffer
+		buf.write-=1;
 		return;
 	}
 	if(c=='\n')
-	{	
-		enter();
+	{	//storeInBuffer('\n');	
+		enter();//deberia guardar el barra n
 		return;
 	}
 	if(c=='\t')
-	{	
-		tab();
+	{	storeInBuffer('\t');
+		tab();//deberia guardar el barra t
 		return;
 	}
 	update_cursor();
@@ -77,11 +81,12 @@ int puts( FILE * stream){
 /***************************************************************
 * scanf (si)(tambien resolver con la idea de minprintf ya que tmb usa func de argumentos variables)
 ****************************************************************/
-/*
-int scanf(const char * format, ...){
+
+int scanf(const char * fmt, ...){
 	va_list ap; //apunta a cada arg sin nombre en orden
 	char *p, *sval, *cval;
 	int *ival;
+	FILE  fp;
 	int read=0,i=0, c,k, j = 0;
 	va_start(ap, fmt); //hace que ap apunte al 1er arg sin nombre
 	char s[BUFFER_SIZE];
@@ -113,7 +118,7 @@ int scanf(const char * format, ...){
 				case 'd':
 							i=0;
 							ival = va_arg(ap,int *);
-							while(s[j] != '\0' && isDigit(s[j]))
+							while(s[j] != '\0' && isdigit(s[j]))
 							{
 								aux[i++] = s[j++];
 							}
@@ -154,7 +159,7 @@ int scanf(const char * format, ...){
 				case 'x':
 							i=0;
 							ival = va_arg(ap,int *);
-							while(s[j] != '\0' && (isDigit(s[j]) || isHexa(s[j])))
+							while(s[j] != '\0' && (isdigit(s[j]) || ishexa(s[j])))
 							{
 								aux[i] = s[j];
 								i++;
@@ -163,7 +168,7 @@ int scanf(const char * format, ...){
 							aux[i] = '\0';
 							if(aux[0] == '\0')
 								return read;
-							*ival=ato(aux, i, 16);
+							//*ival=ato(aux, i, 16);
 							read++;
 							break;
 			
@@ -177,7 +182,7 @@ int scanf(const char * format, ...){
 	va_end(ap); // clean up when done
 	return read;
 }
-*/
+
 
 
 /***************************************************************

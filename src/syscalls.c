@@ -1,12 +1,31 @@
 #include "../include/kernel.h"
 #include "../include/buffer.h"
-int r_shift;
-int l_shift;
-int l_control;
-int r_control;
+//int r_shift;
+//int l_shift;
+//int l_control;
+//int r_control;
 
-int Bloq_Mayus;
+//int Bloq_Mayus;
+
+
 int registers[20];
+typedef struct{
+        int r_shift;
+        int l_shift;
+        int r_control;
+		int l_control;
+		int Bloq_Mayus;
+			} specialKeys;
+specialKeys k;
+
+
+void initializeSpecialKeys(){
+	k.r_control=0;
+	k.r_shift=0;
+	k.l_shift=0;
+	k.l_control=0;
+	
+}	
 //preguntas
 
 //para eflags tengo q acceder al stack(cs ip eflags) iret en la interrupcion de teclado
@@ -43,55 +62,60 @@ size_t __write(int fd, const void* buffer, size_t count){
 			return 0;
 
 			//codigo divino para ctrl R y mayusculas
-		if(c==(char)0x36 && r_shift==0 ){//00110110
-			r_shift=1; //right shift down code
+		if(c==(char)0x36 && (k.r_shift)==0 ){//00110110
+			k.r_shift=1; //right shift down code
 			hola();
 			return 0;
 			}
-		if(c==(char)0xB6 && r_shift==1  ) { //10110110
-			r_shift=0; // right shift up code
+		if(c==(char)0xB6 && k.r_shift==1  ) { //10110110
+			k.r_shift=0; // right shift up code
 			return 0;
 			}
-		if(c==(char)0x2A && l_shift==0 ){//00101010
-			l_shift=1; //left shift down code
+		if(c==(char)0x2A && k.l_shift==0 ){//00101010
+			k.l_shift=1; //left shift down code
 			return 0;
 			}
-		if(c==(char)0xAA && l_shift==1 ) {//10101010 
-			l_shift=0; // left shift up code
+		if(c==(char)0xAA && k.l_shift==1 ) {//10101010 
+			k.l_shift=0; // left shift up code
 			return 0;
 			}
-		if(c==(char)0x1D && l_control==0 ){//00011101
-			l_control=1;//left control down code
+		if(c==(char)0x1D && k.l_control==0 ){//00011101
+			k.l_control=1;//left control down code
 			return 0;
 			}
-		if(c==(char)0x9D && l_control==1 ) { //10011101
-			l_control=0; // left control up code
+		if(c==(char)0x9D && k.l_control==1 ) { //10011101
+			k.l_control=0; // left control up code
 			return 0;
 			}
-		if(c==(char)0xE0 && r_control==0 ){//11100000
-			r_control=1; //right control down code
+		if(c==(char)0xE0 && k.r_control==0 ){//11100000
+			k.r_control=1; //right control down code
 			return 0;
 			}
-		if(c==(char)0xE0 && r_control==1 ) {//11100000 
-			r_control=0; // right control up code
+		if(c==(char)0xE0 && k.r_control==1 ) {//11100000 
+			k.r_control=0; // right control up code
 			return 0;
 			}
-		if(c==(char)0x3A ){Bloq_Mayus=1;return 0;}//111010
-		if(c==(char)0xBA ){Bloq_Mayus=0;return 0;}//10111010
-		if(!(r_shift==1  || l_shift==1  ||Bloq_Mayus) && (r_control == 1 || l_control==1) && c==(char)0x13){
+		if(c==(char)0x3A ){k.Bloq_Mayus=1;return 0;}//111010
+		if(c==(char)0xBA ){k.Bloq_Mayus=0;return 0;}//10111010
+		if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.r_control == 1 || k.l_control==1) && c==(char)0x13){
 			//UBICA CURSOR DONDE DEBE REGISTERS BLA
-			
+			//clean upper screen
+			k_clear_upper_screen();
 			print_registers();
 			return 0;
 		}
-		if((r_shift==1 || l_shift==1) || Bloq_Mayus){//ojo aca! no printefear, guardar en buffer
+		if((k.r_shift==1 || k.l_shift==1) || k.Bloq_Mayus){//ojo aca! no printefear, guardar en buffer
 			d=scanCodeToASCIIshifted(c);
-			
+			if(d-64<0 && d!=10 && d!=32)
+			return 0;	
 			storeInBuffer(d);	
 			return 0;
 		}
 				
 		d=scanCodeToASCII(c);
+ 		if(d-80<0 && d!=10 && d!=32)//10 ascii del enter, 32 del espacio
+			return 0;
+		
 		storeInBuffer(d);
 
 }

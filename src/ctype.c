@@ -4,7 +4,17 @@
 int isalnum(int character);
 int isalpha(int character);
 int iscntrl(int character);
-int isdigit(int character);
+int isdigit(char character){
+	return character >= '0' && character <= '9';
+}
+int
+ishexa(char character){
+	return (character>='a' && character<= 'f');
+}
+
+
+
+
 int isgraph(int character);
 int islower(int character);
 int isprint(int character);
