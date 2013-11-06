@@ -51,7 +51,7 @@ size_t __write(int fd, char buffer, size_t count){
 size_t __read(int fd, char buffer, size_t count){
 char c=getBuffer();
 if(c == 0)
-	return;
-printf("%c",c);
+	return 0;
+return c;
 }
 

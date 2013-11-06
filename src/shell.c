@@ -7,20 +7,40 @@ int test1();
 int opencd();
 int closecd();
 int infocd();
+
+
+void parsecommand(char * s);
+
+void shell(){
 char s[20];
-int i;
-
-
-int shell(){
+int i=0;
 int j,a;
+
 char c;
+	while( ((c=getchar()) != '\n')){
+		if(c!=0){
+			if(c == '\b' && i >= 1){
+			i--;
+			putc(c ,1);
+		}
+		if(c != '\b' && c!='\n')
+		{
+			s[i] = c;
+			i++;
+			putc(c ,1);
+			
+		}
+		
+	}
+}
+	putc(c,1);
+	s[i]='\0';
+	parsecommand(s);
+}
+	//buf.read=buf.write;
 
-	while( buf.read!=buf.write &&((c=getchar()) != '\n')){
-		s[i]=c;
-		i++;
-		putc(c,1);
-
-
+void parsecommand(char * s)
+{	
 		if(!strcmp(s,"man")){
 			man();
 		}
@@ -36,11 +56,8 @@ char c;
 			printf("informacion del cd mierda");
 			infocd();
 		}
-
-	}
-	buf.read=buf.write;
-
-return 0;
+		
+return;
 }	
 
 int man(){
