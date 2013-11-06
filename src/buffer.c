@@ -25,6 +25,7 @@ char getBuffer(){
 	}
 	if(buf.read==buf.write){
 		return 0;
+
 	}
 		c= buf.vec[buf.read];
 		buf.read++;

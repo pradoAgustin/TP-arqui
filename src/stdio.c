@@ -17,46 +17,41 @@ wiki.osdev.org/Inline_Assembly
 ****************************************************************/
 
 char getchar(){
-	char c= getBuffer();
-	return c;
+	return __read(1,1,1);
 }
 
 /***************************************************************
 *  getc (si)
 ****************************************************************/
 int getc(FILE * stream){
-	;
+	return __read(1,1,1);
 }
 
 /***************************************************************
 *  putc (si)
 ****************************************************************/
-int putc(int c, FILE * stdout){
+int putc(char c, FILE * stdout){
 	
 	int i=0 ;
 	if(c=='\b')
 	{	
-		backspace();//deberia retrasar el buffer
-		buf.write-=1;
+		backspace();
 		return;
 	}
 	if(c=='\n')
-	{	//storeInBuffer('\n');	
-		enter();//deberia guardar el barra n
+	{	
+		enter();
 		return;
 	}
 	if(c=='\t')
-	{	storeInBuffer('\t');
-		tab();//deberia guardar el barra t
+	{
+		tab();
 		return;
 	}
 	update_cursor();
 	if(stdout==(FILE *)1 && c!=0){
-		((char *)(POSITION+cursor))[i]=c;
-		i++;
-		((char *)(POSITION+cursor))[i]=WHITE_TXT;
-		i++;
-		update_cursor();
+		__write(1,c,1);
+		
 	}else
 		return ;
 

@@ -10,7 +10,23 @@ int prompt2;
 int registers[20];
 int flags[5];
 int i;
+typedef struct{
+        int r_shift;
+        int l_shift;
+        int r_control;
+		int l_control;
+		int Bloq_Mayus;
+			} specialKeys;
+specialKeys k;
 
+//initializeSpecialKeys();
+void initializeSpecialKeys(){
+	k.r_control=0;
+	k.r_shift=0;
+	k.l_shift=0;
+	k.l_control=0;
+	
+}	
 
 void int_08() {
 
@@ -18,7 +34,7 @@ void int_08() {
     //video[tickpos+=2]='*';
 }
 
-void int_09(){
+void int_09(char c){
 		flags[0]=read_flags();
 		registers[0]= read_register_eax();
 		registers[1]= read_register_ebx();
@@ -29,61 +45,93 @@ void int_09(){
 		registers[6]= read_register_esi();
 		registers[7]= read_register_edi();
 			
-	// EDI, ESI , EBP, EBX. EDX, ECX, EAX, 
-			//acceder a la rutina de interrupcion a su stack 
-			// asm("movl %%eax, %%eax"
-			// 	:"=a" (registers[0]));//EAX
-			// 	//ctrl R mi proceso esta con el calculo matematico, datos relativos a mi handler de write esta mal
-			// asm("movl %%ebx, %%ebx"
-			// 	:"=b" (registers[1]));//EBX
-			// asm("movl %%ecx, %%ecx"
-			// 	:"=c" (registers[2]));//ECX
-			// asm("movl %%edx, %%edx"
-			// 	:"=d" (registers[3]));//EDX	
-			// asm("movl %%esp, %%eax"
-			// 	:"=a" (registers[4]));//ESP
-			// asm("movl %%ebp, %%eax"
-			// 	:"=a" (registers[5]));//EBP
-			// asm("movl %%esi, %%esi"
-			// 	:"=S" (registers[6]));//ESI
-			// asm("movl %%edi, %%edi"
-			// 	:"=D" (registers[7]));//EDI
-			// asm("xorl %%eax, %%eax\n"
-			// 	"movw %%cs, %%eax" //http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html
-			// 	:"=a" (registers[8]));//CS
-			// asm("xorl %%eax, %%eax\n"
-			// 	"movw %%ss,%%ax "
-			// 	:"=a" (registers[9]));//SS
-			// asm("xorl %%eax, %%eax\n"
-			// 	"movw %%ds,%%ax "
-			// 	:"=a" (registers[10]));//DS
-			// asm("xorl %%eax, %%eax\n"
-			// 	"movw %%es,%%ax "
-			// 	:"=a" (registers[11]));//ES
-			// asm("xorl %%eax, %%eax\n"
-			// 	"movw %%fs,%%ax "
-			// 	:"=a" (registers[12]));//FS
-			// asm("xorl %%eax, %%eax\n"
-			// 	"movw %%gs,%%ax "
-			// 	:"=a" (registers[13]));//GS
-			//codigo divino para ctrl R y mayusculas
-	
-  //guardo en assembler los registros
-//__save_registers();
-    __write(1,1,1);
-shell();
-	//__read(1,1,1);
-	//shell();
-}
+		char d,a;
 
+		if(c-80>0 )
+			return;
+
+			//codigo divino para ctrl R y mayusculas
+		else if(c==(char)0x36 && (k.r_shift) == 0 ){//00110110
+			k.r_shift=1; //right shift down code
+			return;
+			}
+
+		else if(c==(char)0xB6 && k.r_shift == 1  ) { //10110110
+			k.r_shift=0; // right shift up code
+			return;
+			}
+
+		else if(c==(char)0x2A && k.l_shift == 0 ){//00101010
+			k.l_shift=1; //left shift down code
+			return;
+			}
+
+		else if(c==(char)0xAA && k.l_shift == 1 ) {//10101010 
+			k.l_shift=0; // left shift up code
+			return;
+			}
+
+		else if(c==(char)0x1D && k.l_control==0 ){//00011101
+			k.l_control=1;//left control down code
+			return;
+			}
+		else if(c==(char)0x9D && k.l_control==1 ) { //10011101
+			k.l_control=0; // left control up code
+			return;
+			}
+		else if(c==(char)0xE0 && k.r_control==0 ){//11100000
+			k.r_control=1; //right control down code
+			return;
+			}
+		else if(c==(char)0xE0 && k.r_control==1 ) {//11100000 
+			k.r_control=0; // right control up code
+			return;
+			}
+		else if(c==(char)0x3A ){//111010
+			k.Bloq_Mayus=1;
+			return;
+			}
+		else if(c==(char)0xBA ){//10111010
+			k.Bloq_Mayus=0;
+			return;
+			}
+
+		else if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.r_control == 1 || k.l_control==1) && c==(char)0x13){
+			//UBICA CURSOR DONDE DEBE REGISTERS BLA
+			//clean upper screen
+			k_clear_upper_screen();
+			print_registers();
+			return;
+		}
+		else if((k.r_shift==1 || k.l_shift==1) || k.Bloq_Mayus){//ojo aca! no printefear, guardar en buffer
+			d=scanCodeToASCIIshifted(c);
+
+			 if(d-64<0 && d!=10 && d!=32 && d!=8&& d!=15)
+			 	return;	
+			storeInBuffer(d);	
+			
+		}
+		else if((d=scanCodeToASCII(c))-80<0 && d!=10 && d!=32 && d!=8 && d!=15)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
+			return;
+		
+		else
+		{
+		d=scanCodeToASCII(c);
+		storeInBuffer(d);
+		}
+
+  // __read(1,1,1);
+
+}
 /**********************************************
 kmain() 
 Punto de entrada de cóo C.
 *************************************************/
 
 kmain() 
-{cursor=0;
-prompt2=1;
+{
+cursor = 0;
+prompt2 = 1;
 i=0;
  //initializeBuffer();
  initializeSpecialKeys();
@@ -119,12 +167,13 @@ printf("________________________________________________________________________
 cursor=160*10;
 prompt();
 update_cursor();
-//shell();
 
         while(1)
         {
-		//shell();
+		shell();
         }
 	
 }
+
+
 

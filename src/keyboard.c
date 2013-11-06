@@ -70,4 +70,3 @@ void prompt(void){
 	prompt2=1;
 }
 
-

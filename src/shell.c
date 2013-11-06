@@ -15,27 +15,30 @@ int shell(){
 int j,a;
 char c;
 
-	while( ((c=getchar()) != 0)){
+	while( buf.read!=buf.write &&((c=getchar()) != '\n')){
 		s[i]=c;
 		i++;
-	putc(c,1);
-	}
+		putc(c,1);
 
-if(!strcmp(s,"man\n")){
-	man();
-}
-if(!strcmp(s,"opencd\n")){
-	printf("abri cd mierda");
-	opencd();
-}
-if(!strcmp(s,"closecd\n")){
-	printf("cerra cd mierda");
-	closecd();
-}
-if(!strcmp(s,"infocd\n")){
-	printf("informacion del cd mierda");
-	infocd();
-}
+
+		if(!strcmp(s,"man")){
+			man();
+		}
+		if(!strcmp(s,"opencd")){
+			printf("abri cd mierda");
+			opencd();
+		}
+		if(!strcmp(s,"closecd")){
+			printf("cerra cd mierda");
+			closecd();
+		}
+		if(!strcmp(s,"infocd")){
+			printf("informacion del cd mierda");
+			infocd();
+		}
+
+	}
+	buf.read=buf.write;
 
 return 0;
 }	
