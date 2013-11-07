@@ -16,6 +16,12 @@ GLOBAL read_register_esi
 GLOBAL read_register_edi
 GLOBAL read_register_ebp
 GLOBAL read_register_esp
+GLOBAL read_segment_cs
+GLOBAL read_segment_ss
+GLOBAL read_segment_fs
+GLOBAL read_segment_gs
+GLOBAL read_segment_ds
+GLOBAL read_segment_es
 
 EXTERN  int_08
 EXTERN  int_09
@@ -83,12 +89,21 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
         
 _int_09_hand:			    ; Handler de INT9 (Teclado)
     pushad                  ; Buckupea todos los registros.
-    pushf                   ; Backupea todos los flags.
+    pushf                    ; Backupea todos los flags.
+    push cs
+    push ss
+    push ds
+    push es
+    push fs
+    push gs                  
     mov eax,0
     in al,060h              ; Le pido el scancode al teclado.
+    ;call save_registers
     push eax
+
     call int_09
     pop eax
+    add esp,24
     mov	al,20h			    ; Le mando el EOI generico al PIC.
     out 20h,al
     popf                    ; Restauro todos los flags.
@@ -96,7 +111,6 @@ _int_09_hand:			    ; Handler de INT9 (Teclado)
     iretd
     
 
-    
 
 outportb:
     push ebp
@@ -110,68 +124,7 @@ outportb:
     pop ebp
     ret
 
-
-read_flags:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+12]
-
-    mov esp, ebp
-    pop ebp
-    ret
-
-read_register_edi:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+16]
-
-    mov esp, ebp
-    pop ebp
-    ret
-
-read_register_esi:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+20]
-
-    mov esp, ebp
-    pop ebp
-    ret
-
-read_register_ebp:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+24]
-
-    mov esp, ebp
-    pop ebp
-    ret
-
-read_register_esp:
-    push ebp
-    mov ebp, esp
-
-    mov eax, esp
-
-    mov esp, ebp
-    pop ebp
-    ret
-
-read_register_ebx:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+28]
-
-    mov esp, ebp
-    pop ebp
-    ret
-
-read_register_edx:
+read_segment_cs:
     push ebp
     mov ebp, esp
 
@@ -181,7 +134,59 @@ read_register_edx:
     pop ebp
     ret
 
-read_register_ecx:
+read_segment_ss:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+28]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_segment_ds:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+24]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_segment_es:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+20]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_segment_fs:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+16]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_segment_gs:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+12]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+
+
+read_flags:
     push ebp
     mov ebp, esp
 
@@ -191,11 +196,81 @@ read_register_ecx:
     pop ebp
     ret
 
-read_register_eax:
+read_register_edi:
     push ebp
     mov ebp, esp
 
     mov eax, [esp+40]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_esi:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+44]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_ebp:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+48]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_esp:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+52]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_ebx:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+56]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_edx:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+60]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_ecx:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+64]
+
+    mov esp, ebp
+    pop ebp
+    ret
+
+read_register_eax:
+    push ebp
+    mov ebp, esp
+
+    mov eax, [esp+68]
 
     mov esp, ebp
     pop ebp
@@ -273,3 +348,17 @@ vuelve:	mov     ax, 1
 	pop	ax
 	pop     bp
         retn
+
+;save_registers:
+ ;   mov si,0
+;loop:
+;    mov eax, [esi+si]
+;    mov [buffer+si], eax
+;    mov si, esi+4
+;    cmp si, 68
+;    jne loop
+;    ret
+
+;section .bss
+;    buffer resb 64
+    

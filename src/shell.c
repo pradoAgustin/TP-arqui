@@ -33,11 +33,13 @@ char c;
 		
 	}
 }
+//enter();
 	putc(c,1);
 	s[i]='\0';
+
 	parsecommand(s);
 }
-	//buf.read=buf.write;
+	// buf.read = buf.write;
 
 void parsecommand(char * s)
 {	

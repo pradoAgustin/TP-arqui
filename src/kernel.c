@@ -1,7 +1,7 @@
 #include "../include/kasm.h"
 #include "../include/defs.h"
 #include "../include/buffer.h"
-
+int segments[6];
 DESCR_INT idt[0xA];			/* IDT de 10 entradas*/
 IDTR idtr;				/* IDTR */
 int cursoraux;
@@ -35,15 +35,30 @@ void int_08() {
 }
 
 void int_09(char c){
-		flags[0]=read_flags();
-		registers[0]= read_register_eax();
-		registers[1]= read_register_ebx();
-		registers[2]= read_register_ecx();
-		registers[3]= read_register_edx();
-		registers[4]= read_register_esp();
-		registers[5]= read_register_ebp();
-		registers[6]= read_register_esi();
-		registers[7]= read_register_edi();
+		int flag;
+		int bit=1;
+		// flag=read_flags();
+		// flags[0]=flag<<2 & bit;
+		// flags[1]=flag<<6 & bit;
+		// flags[2]=flag<<9 & bit;
+
+		// flags[3]=flag<<21 & bit;
+
+		// segments[0]=read_segment_cs();
+		// segments[1]=read_segment_ss();
+		// segments[2]=read_segment_ds();
+		// segments[3]=read_segment_es();
+		// segments[4]=read_segment_fs();
+		// segments[5]=read_segment_gs();
+
+		// registers[0]= read_register_eax();
+		// registers[1]= read_register_ebx();
+		// registers[2]= read_register_ecx();
+		// registers[3]= read_register_edx();
+		// registers[4]= read_register_esp();
+		// registers[5]= read_register_ebp();
+		// registers[6]= read_register_esi();
+		// registers[7]= read_register_edi();
 			
 		char d,a;
 
