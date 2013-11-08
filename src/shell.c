@@ -7,7 +7,7 @@ int test1();
 int opencd();
 int closecd();
 int infocd();
-
+extern _detectATAPI();
 
 void parsecommand(char * s);
 
@@ -31,7 +31,7 @@ char c;
 			
 		}
 		
-	}
+	}// si atapi retorna 1 esta todo bien sino no
 }
 //enter();
 	putc(c,1);
@@ -84,11 +84,20 @@ int test1(){
 
 }
 int opencd(){
+_detectATAPI();
+printf("ya esta");
 
 }
 int closecd(){
 
+if(_detectATAPI() == 1 )
+	printf("entre xq atapi puso un 1");
+	else 
+		printf("atapi no devolvio uno y no entre");
 }
+
 int infocd(){
 	
 }
+
+//mkiso
