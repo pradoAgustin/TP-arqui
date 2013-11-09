@@ -37,7 +37,7 @@ void int_08() {
 void int_09(char c){
 		int flag;
 		int bit=1;
-		flag=read_flags();
+		flag = read_flags();
 		flags[0]=flag<<2 & bit;
 		flags[1]=flag<<6 & bit;
 		flags[2]=flag<<9 & bit;
@@ -177,12 +177,7 @@ i=0;
 
 
 /* Llamo a getchar para probar mi codigo, hecho por mi*/	
-cursor=160*9;
-printf("________________________________________________________________________________");
-cursor=160*10;
-prompt();
-update_cursor();
-
+initialize_screen();
         while(1)
         {
 		shell();

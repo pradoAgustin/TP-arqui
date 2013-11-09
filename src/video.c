@@ -21,6 +21,8 @@ void k_scroll()
 	}
 }
 
+
+
 void update_cursor() { 
 	unsigned short position = cursor; 
 	if (position != 0) { 
@@ -65,4 +67,13 @@ print_registers(){
 			printf("eflags \t%x \t[PF ZF IF ID]", flags);// PF=PARITY FLAG, ZF=ZERO FLAG, IF=INTERRUMPT ENABLE FLAG ID=ID FLAG
 			cursor=cursoraux;
 			printf("\n");
+}
+
+
+void initialize_screen(){
+cursor=160*9;
+printf("________________________________________________________________________________");
+cursor=160*10;
+prompt();
+update_cursor();
 }

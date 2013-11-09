@@ -7,6 +7,8 @@ int test1();
 int opencd();
 int closecd();
 int infocd();
+void testuno();
+int cursor;
 extern _opencd();
 extern _printError();
 void parsecommand(char * s);
@@ -55,12 +57,24 @@ void parsecommand(char * s)
 			printf("cerra cd mierda\n");
 			closecd();
 		}
+		if(!strcmp(s,"testuno")){
+			testuno();
+		}
 		if(!strcmp(s,"infocd")){
 			printf("informacion del cd mierda\n");
 			infocd();
 		}
-		else 
-			printf("comando invalido\n");
+		if(!strcmp(s,"clearup")){
+			clearup();
+		}
+		if(!strcmp(s,"troll")){
+			troll();
+		}
+		if(!strcmp(s,"clear")){
+			clear();
+		}
+		//else 
+			//printf("comando invalido\n");
 		
 return;
 }	
@@ -70,43 +84,103 @@ printf("man \t muestra en pantalla todos los comandos posibles\n");
 printf("opencd \t abre la disquetera\n");
 printf("closecd \t cierra la disquetera\n");
 printf("infoCD \t  informacion sobre el cd en la disquetera\n");
-printf("test1 \t sirve para demostrar el funcionamiento de scanf, printf,\n");
-printf("test2 \t muestra un cambio en los registros\n");
+printf("testuno \t Demostrar el funcionamiento de scanf, printf,\n");
+printf("testdos \t muestra un cambio en los registros");
+printf("\n");
 printf("troll \t comando sorpresa \n");
+
 
 
 }
 int troll(){
-
-
-
+	cursor=0;
+	k_clear_screen();
+ printf("                  {}\n");
+printf("  ,   A           {}\n");
+printf(" / \\, | ,        .--.\n");
+printf("|  =|= >        /.--.\\\n");
+printf(" \\ /` | `       |====|\n");
+printf("  `   |         |`::`|\n");
+printf("      |     .-;`\\..../`;_.-^-._\n");
+printf("     /\\\\/  /  |...::..|`   :   `|\n");
+printf("     |:'\\ |   /'''::''|   .:.   |\n");
+printf("      \\ /\\;-,/\\   ::  |..ASCII..|\n");
+printf("      |\\ <` >  >._::_.| ':ART:' |\n");
+printf("      | `""`_/   ^^/>/>  |   ':'   |\n");
+printf("      |       |       \\    :   /\n");
+printf("      |       |        \\   :   /\n");
+printf("      |       |___/\\___|`-.:.-`\n");
+printf("      |        \\_ || _/    `\n");
+printf("      |        <_ >< _>\n");
+printf("      |        |  ||  |\n");
+printf("      |        |  ||  |\n");
+printf("      |       _\\.:||:./_\n");
+printf("      | jgs  /____/\\____\\\n");
+printf("\n");
+ }
+void testuno(){
+printf("Bienvenido a nuestro sistema operativo para wachiturros\n");
+printf("Ingrese su nombre o tirese un paso \n");
+char c;
+int i=0;
+char * n;
+char s[20];
+	while( ((c=getchar()) != '\n')){
+		if(c!=0){
+			if(c == '\b' && i >= 1){
+			i--;
+			putc(c ,1);
+		}
+		if(c != '\b' && c!='\n')
+		{
+			s[i] = c;
+			i++;
+			putc(c ,1);
+			
+		}
+		
+	}
 }
-int test1(){
 
+	putc(c,1);
+	s[i]='\0';
 
+printf("Bienvenido wachiturro %s \n\n",s);
+printf("Los comandos disponibles son los siguientes\n\n");
+man();
+}
 
+int testdos(){
+	printf("este es es el test 2");
+	return;
+}
+//char * parse_name()
+int clear(){
+	k_clear_screen();
+	initialize_screen();
+}
+
+int clearup(){
+	k_clear_upper_screen();
 }
 int opencd(){
 _opencd();
 printf("ya esta\n");
 
 }
+
+
 int closecd(){
 	_closecd();
 }
 
+
 int infocd(){
-	
+	_infocd();
 }
 
 int printStatus(int num){
 int flag = 0;
-
-// if((num & 0) == 0){
-// printf("No flags ");
-// }
-
-
 if((num & 2) == 2){
 printf("IDX ");
 flag = 1;
@@ -154,9 +228,6 @@ flag = 1;
 }
 
 printf("\n");
-
-
-
 return 0;
 }
 

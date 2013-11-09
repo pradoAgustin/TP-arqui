@@ -21,7 +21,6 @@ void k_clear_screen()
 	}
 }
 
-
 void k_clear_upper_screen() 
 {
 	int h=0;

@@ -29,7 +29,8 @@ EXTERN printStatus
 GLOBAL  _printError
 EXTERN printNum
 GLOBAL _closecd
-
+GLOBAL _infocd
+GLOBAL cambiar_eax
 SECTION .text
 
 
@@ -131,7 +132,7 @@ read_segment_cs:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+32]
+    mov eax, [esp+36];[esp+32]
 
     mov esp, ebp
     pop ebp
@@ -141,7 +142,7 @@ read_segment_ss:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+28]
+    mov eax, [esp+32];[esp+28]
 
     mov esp, ebp
     pop ebp
@@ -151,7 +152,7 @@ read_segment_ds:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+24]
+    mov eax, [esp +28];[esp+24]
 
     mov esp, ebp
     pop ebp
@@ -161,7 +162,7 @@ read_segment_es:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+20]
+    mov eax, [esp+24];[esp+20]
 
     mov esp, ebp
     pop ebp
@@ -171,7 +172,7 @@ read_segment_fs:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+16]
+    mov eax, [esp+20];[esp+16]
 
     mov esp, ebp
     pop ebp
@@ -181,7 +182,7 @@ read_segment_gs:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+12]
+    mov eax, [esp+16];[esp+12]
 
     mov esp, ebp
     pop ebp
@@ -193,7 +194,7 @@ read_flags:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+36]
+    mov eax, [esp+40];[esp+36]
 
     mov esp, ebp
     pop ebp
@@ -203,7 +204,7 @@ read_register_edi:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+40]
+    mov eax, [esp+44];[esp+40]
 
     mov esp, ebp
     pop ebp
@@ -213,7 +214,7 @@ read_register_esi:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+44]
+    mov eax, [esp+48];[esp+44]
 
     mov esp, ebp
     pop ebp
@@ -223,7 +224,7 @@ read_register_ebp:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+48]
+    mov eax, [esp +52];[esp+48]
 
     mov esp, ebp
     pop ebp
@@ -233,7 +234,7 @@ read_register_esp:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+52]
+    mov eax, [esp+56];[esp+52]
 
     mov esp, ebp
     pop ebp
@@ -243,7 +244,7 @@ read_register_ebx:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+56]
+    mov eax, [esp +60];[esp+56]
 
     mov esp, ebp
     pop ebp
@@ -253,7 +254,7 @@ read_register_edx:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+60]
+    mov eax, [esp+64];[esp+60]
 
     mov esp, ebp
     pop ebp
@@ -263,7 +264,7 @@ read_register_ecx:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+64]
+    mov eax, [esp+68];[esp+64]
 
     mov esp, ebp
     pop ebp
@@ -273,13 +274,14 @@ read_register_eax:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+68]
+    mov eax, [esp+72]
 
     mov esp, ebp
     pop ebp
     ret
 
-
+cambiar_eax:
+mov eax, ebx
 
 
 inportb:
@@ -651,6 +653,7 @@ push eax
 call printStatus
 pop eax
 
+
 call _pollBSY
 ret
 
@@ -683,7 +686,8 @@ call _pollBSY
 call _pollDRQ
 
 mov dx, 0x1F0 
-mov al, 0x1E 
+
+mov al, 0xA8
 out dx, al
 
 mov al, 0 
@@ -730,7 +734,7 @@ call _pollBSY
 call _pollDRQ
 
 mov dx, 0x1f0
-mov al, 1Bh 
+mov al, 0x25
 out dx, al
 
 mov al, 0 
@@ -742,7 +746,7 @@ out dx, al
 mov al, 0 
 out dx, al
 
-mov al, 2 
+mov al, 0
 out dx, al
 
 mov al, 0 
@@ -776,3 +780,21 @@ pop eax
 
 call _pollBSY
 ret
+
+
+;A medium is any media inserted in the ATAPI Drive, like a CD or a DVD. By using the 'SCSI Read Capacity' command, ;you can read the last LBA of the medium, then you calculate the medium's capacity using this relationship:
+
+;Capacity = (Last LBA + 1) * Block Size;
+
+;Last LBA and Block Size are returned after processing the command. Almost all CDs and DVDs use blocks with size of ;2KB each.
+
+;Processing this command goes in the following algorithm:
+
+   ; Selecting the Drive [Master/Slave].
+   ; Waiting 400ns for select to complete.
+   ; Setting FEATURES Register to 0 [PIO Mode].
+   ; Setting LBA1 and LBA2 Registers to 0x0008 [Number of Bytes will be returned].
+   ; Sending Packet Command, then Polling.
+   ; Sending the ATAPI Packet, then polling.
+   ; If there isn't an error, reading 4 Words [8 bytes] from the DATA Register. 
+
