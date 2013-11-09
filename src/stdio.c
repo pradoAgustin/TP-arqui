@@ -97,7 +97,7 @@ int scanf(const char * fmt, ...){
 	}
 	s[i] = '\0';
 	i = 0;
-		for (p = fmt; *p; p++) 
+		for (p = (char*)fmt; *p; p++) 
 		{
 			char aux [BUFFER_SIZE] = {0};
 

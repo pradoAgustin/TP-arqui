@@ -22,10 +22,13 @@ GLOBAL read_segment_fs
 GLOBAL read_segment_gs
 GLOBAL read_segment_ds
 GLOBAL read_segment_es
-GLOBAL _detectATAPI
+GLOBAL _opencd
 EXTERN  int_08
 EXTERN  int_09
-
+EXTERN printStatus
+GLOBAL  _printError
+EXTERN printNum
+GLOBAL _closecd
 
 SECTION .text
 
@@ -363,129 +366,413 @@ vuelve:	mov     ax, 1
 ;    buffer resb 64
    ;///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-_detectATAPI:
-MOV DX, 177h ;status register
+_opencd:
+
+call _pollBSY
+
+mov ax, 00h 
+mov dx, 0x1F6 
+out dx, ax ; al puerto 1f6 mando un cero
+
+mov dx, 0x1F1
+mov ax, 0 
+out dx, ax ; al puerto 1f1 mando un cero
+
+;call _pollDRDY
+
+mov dx, 0x1F7 
+mov ax, 0xA0 
+out dx, ax ; al puerto 1f7 mando el A0
+
+; puede pasar q tarde un cacho 
+
+mov ebx, 65000
+loop9: 
+dec ebx
+cmp ebx, 0
+jne loop9
+
+call _pollBSY 
+call _pollDRQ
+
+mov dx, 0x1F0 
+mov al, 0x1E 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+call _pollBSY 
+call _pollDRDY
+
+mov dx, 0x1F7 
+mov ax, 0xA0 
+out dx, ax
+
+call _pollBSY 
+call _pollDRQ
+
+mov dx, 0x1f0
+mov al, 1Bh 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 2 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+;mov eax, 0
+;mov dx, 0x1f7
+;in eax, dx
+;push eax
+;call printStatus
+;pop eax
+
+call _pollBSY
+ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;pollDRDY no hace falta
+;;pollbsy es fijarse si busy no esta en 1
+;;polldrq es fijarse que drq este en 1
+;;0x1E  y todo cero es para habilitar la lectora
+;;para cerrar la lectora no hace falta 0x1E
+;; solo hace falta 0x1B
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+_pollBSY:
+MOV DX, 1F7h 
 LOOP1:
-IN AL, DX ;sets AL to status register (which is 8 bits)
-
-;If the first bit of the status register (BUSY) isn't 0, the device is busy,
-;so keep looping until it isn't.
-
-AND AL, 0x80;10000000xB
+IN AL, DX 
+AND AL, 0x80
 JNE LOOP1
-
-;----------------------------------------------------------------------------
-
-;Clear interrupts so something doesn't interrupt the drive or controller
-;while this program is working.
-CLI
-
-;----------------------------------------------------------------------------
-
-MOV DX, 177h ;status register again
-LOOP2:
-IN AL, DX ;sets AL to status register again
-
-;If the second bit of the status register (DRDY) isn't 1, the device isn't
-;ready, so keep looping until it is.
-
-AND AL, 0x40;01000000xB
-JE LOOP2
-
-;----------------------------------------------------------------------------
-
-MOV DX, 176h ;device/head register
-MOV AL, 0 ;0 selects device 0 (master). 10h would select device 1 (slave).
-OUT DX, AL ;selects master device
-
-;IMPORTANT: Set nIEN before you send the PACKET command!
-;Let's set nIEN to 1 so we can skip the INTRQ_Wait state.
-
-MOV DX, 3F6h ;Device Control register
-MOV AL, 0xA;00001010xB ;nIEN is the second bit from the right here
-OUT DX, AL ;nIEN is now one!
-
-MOV DX, 177h ;command register
-MOV AL, 0A0h ;PACKET command
-OUT DX, AL ;sends the command!
-
-;After sending the PACKET command, the host is to wait 400 nanoseconds before
-;doing anything else.
-MOV CX,0FFFFh
-WAITLOOP:
-LOOPNZ WAITLOOP
-
-;----------------------------------------------------------------------------
-
-MOV DX, 177h ;status register again
-LOOP3:
-IN AL, DX ;sets AL to status register again
-
-;Poll until BUSY bit is clear.
-
-AND AL, 0x80;10000000xB
-JNE LOOP3
-
-;Also, poll until DRQ is one.
-MOV DX, 177h ;status register again
+ret
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+_pollDRDY:
+ret
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+_pollDRQ:
+MOV DX, 1F7h 
 LOOP4:
 IN AL, DX
-AND AL,0x8; 00001000xB
+AND AL,0x08 
 JE LOOP4
+ret
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;----------------------------------------------------------------------------
-;NOW WE START SENDING THE COMMAND PACKET!!!
 
-;MOV CX, 6 ;do this 6 times because it's 6 word writes (a word is 2 bytes)
-;MOV DS, SEG buff
-;MOV SI, OFFSET buff
-;DS:SI now points to the buffer which contains our ATAPI command packet
-;CLD ;clear direction flag so SI gets incremented, not decremented
+_printError:
+mov dx, 0x1F1
+mov ax, 0
+in al, dx
+push eax
+call printNum
+pop eax
+ret
 
-;COMPACKLOOP: ;command packet sending loop
-;MOV DX, 170h ;data register
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+_closecd:
 
-;Because we're going to need to write a word (2 bytes), we can't just use an
-;8-bit register like AL. For this operation, we'll need to use the full width
-;of the 16-bit accumulator AX. We'll use the LODSW opcode, which loads AX
-;with whatever DS:SI points to. Not only this, but if the direction flag is
-;cleared (which we did a few lines above with the CLD instruction), LODSW
-;also auto-increments SI.
-;LODSW
-;OUT DX, AX ;send the current word of the command packet!!!
+call _pollBSY
 
-;MOV DX, 3F6h ;Alternate Status Register
-;IN AL, DX ;wait one I/O cycle
+mov ax, 00h 
+mov dx, 0x1F6 
+out dx, ax ; al puerto 1f6 mando un cero
 
-;LOOPNZ COMPACKLOOP
+mov dx, 0x1F1
+mov ax, 0 
+out dx, ax ; al puerto 1f1 mando un cero
 
-;----------------------------------------------------------------------------
+;call _pollDRDY
 
-;Once again, let's read the Alternate Status Register and ignore the result,
-;since the spec says so.
+mov dx, 0x1F7 
+mov ax, 0xA0 
+out dx, ax ; al puerto 1f7 mando el A0
 
-MOV DX, 3F6h
-IN AL, DX
+; puede pasar q tarde un cacho 
 
-;Okay... That's done.
-;Time to poll the status register until BUSY is 0 again.
+mov ebx, 65000
+loop97: 
+dec ebx
+cmp ebx, 0
+jne loop97
 
-MOV DX, 177h ;status register
-LOOP5:
-IN AL, DX
+call _pollBSY 
+call _pollDRQ
 
-AND AL, 0x80;10000000xB
-JNE LOOP5
+mov dx, 0x1F0 
 
-;BUSY is zero here.
-;We're also supposed to check DRQ, but hey, screw it.
+mov al, 0x1E 
+out dx, al
 
-STI
+mov al, 0 
+out dx, al
 
-;----------------------------------------------------------------------------
+mov al, 0 
+out dx, al
 
-mov ah,0x004C  ;terminate program
-int 21h
+mov al, 0 
+out dx, al
 
-buff db 1Bh, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0
+mov al, 0 
+out dx, al
 
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+call _pollBSY 
+call _pollDRDY
+
+mov dx, 0x1F7 
+
+mov ax, 0xA0 
+out dx, ax
+
+call _pollBSY 
+call _pollDRQ
+
+mov dx, 0x1f0
+mov al, 1Bh 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 3 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov eax, 0
+mov dx, 0x1f7
+in eax, dx
+push eax
+call printStatus
+pop eax
+
+call _pollBSY
+ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+_infocd:
+
+call _pollBSY
+
+mov ax, 00h 
+mov dx, 0x1F6 
+out dx, ax ; al puerto 1f6 mando un cero
+
+mov dx, 0x1F1
+mov ax, 0 
+out dx, ax ; al puerto 1f1 mando un cero
+
+;call _pollDRDY
+mov dx, 0x1F7 
+mov ax, 0xA0 
+out dx, ax ; al puerto 1f7 mando el A0
+
+; puede pasar q tarde un cacho 
+mov ebx, 65000
+loop982: 
+dec ebx
+cmp ebx, 0
+jne loop982
+
+call _pollBSY 
+call _pollDRQ
+
+mov dx, 0x1F0 
+mov al, 0x1E 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+call _pollBSY 
+call _pollDRDY
+
+mov dx, 0x1F7 
+mov ax, 0xA0 
+out dx, ax
+
+call _pollBSY 
+call _pollDRQ
+
+mov dx, 0x1f0
+mov al, 1Bh 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 2 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov eax, 0
+mov dx, 0x1f7
+
+in eax, dx
+push eax
+call printStatus
+pop eax
+
+call _pollBSY
+ret

@@ -7,9 +7,10 @@ int test1();
 int opencd();
 int closecd();
 int infocd();
-extern _detectATAPI();
-
+extern _opencd();
+extern _printError();
 void parsecommand(char * s);
+extern _closecd();
 
 void shell(){
 char s[20];
@@ -47,17 +48,19 @@ void parsecommand(char * s)
 			man();
 		}
 		if(!strcmp(s,"opencd")){
-			printf("abri cd mierda");
+			printf("abri cd mierda\n");
 			opencd();
 		}
 		if(!strcmp(s,"closecd")){
-			printf("cerra cd mierda");
+			printf("cerra cd mierda\n");
 			closecd();
 		}
 		if(!strcmp(s,"infocd")){
-			printf("informacion del cd mierda");
+			printf("informacion del cd mierda\n");
 			infocd();
 		}
+		else 
+			printf("comando invalido\n");
 		
 return;
 }	
@@ -84,20 +87,81 @@ int test1(){
 
 }
 int opencd(){
-_detectATAPI();
-printf("ya esta");
+_opencd();
+printf("ya esta\n");
 
 }
 int closecd(){
-
-if(_detectATAPI() == 1 )
-	printf("entre xq atapi puso un 1");
-	else 
-		printf("atapi no devolvio uno y no entre");
+	_closecd();
 }
 
 int infocd(){
 	
+}
+
+int printStatus(int num){
+int flag = 0;
+
+// if((num & 0) == 0){
+// printf("No flags ");
+// }
+
+
+if((num & 2) == 2){
+printf("IDX ");
+flag = 1;
+}
+
+if((num & 4) == 4){
+printf("Corr ");
+flag = 1;
+}
+
+if((num & 8) == 8){
+printf("DRQ ");
+flag = 1;
+}
+
+if((num & 16) == 16){
+printf("DSC ");
+flag = 1;
+}
+
+if((num & 32) == 32){
+printf("DF ");
+flag = 1;
+}
+
+if((num & 64) == 64){
+printf("DRDY ");
+flag = 1;
+}
+
+if((num & 128) == 128){
+printf("BSY ");
+flag = 1;
+}
+
+if(flag == 0){
+printf("No flags ");
+}
+
+if((num & 1) == 1){
+printf("Error: ");
+_printError();
+
+flag = 1;
+}
+
+printf("\n");
+
+
+
+return 0;
+}
+
+int printNum(int num){
+	printf("%d",num);
 }
 
 //mkiso
