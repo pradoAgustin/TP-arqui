@@ -175,8 +175,6 @@ i=0;
         
 	_Sti();
 
-
-/* Llamo a getchar para probar mi codigo, hecho por mi*/	
 initialize_screen();
         while(1)
         {

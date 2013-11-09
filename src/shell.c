@@ -50,18 +50,18 @@ void parsecommand(char * s)
 			man();
 		}
 		if(!strcmp(s,"opencd")){
-			printf("abri cd mierda\n");
+			printf("Abriendo cd :) \n");
 			opencd();
 		}
 		if(!strcmp(s,"closecd")){
-			printf("cerra cd mierda\n");
+			printf("Cerrando cd :)\n");
 			closecd();
 		}
 		if(!strcmp(s,"testuno")){
 			testuno();
 		}
 		if(!strcmp(s,"infocd")){
-			printf("informacion del cd mierda\n");
+			printf("Informacion del cd \n");
 			infocd();
 		}
 		if(!strcmp(s,"clearup")){
@@ -80,14 +80,14 @@ return;
 }	
 
 int man(){
-printf("man \t muestra en pantalla todos los comandos posibles\n");
-printf("opencd \t abre la disquetera\n");
-printf("closecd \t cierra la disquetera\n");
-printf("infoCD \t  informacion sobre el cd en la disquetera\n");
-printf("testuno \t Demostrar el funcionamiento de scanf, printf,\n");
-printf("testdos \t muestra un cambio en los registros");
+printf("man    \t Muestra en pantalla todos los comandos posibles\n");
+printf("opencd \t Abre la disquetera\n");
+printf("closecd\t Cierra la disquetera\n");
+printf("infoCD \t Informacion sobre el cd en la disquetera\n");
+printf("testuno\t Demostrar el funcionamiento de scanf, printf,\n");
+printf("testdos\t Muestra un cambio en los registros");
 printf("\n");
-printf("troll \t comando sorpresa \n");
+printf("troll  \t Comando sorpresa \n");
 
 
 
@@ -152,6 +152,7 @@ man();
 
 int testdos(){
 	printf("este es es el test 2");
+	//este test lo que debe hacer es alterar los registros
 	return;
 }
 //char * parse_name()
