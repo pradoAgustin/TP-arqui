@@ -1,7 +1,5 @@
 #include "../include/defs.h"
 #include "../include/kc.h"
-
-
 /***************************************************************
 *k_scroll
 * scrolleaaa.//la parte de abajo solo

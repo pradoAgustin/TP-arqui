@@ -73,12 +73,8 @@ printf("opencd \t Abre la disquetera\n");
 printf("closecd\t Cierra la disquetera\n");
 printf("infoCD \t Informacion sobre el cd en la disquetera\n");
 printf("testuno\t Demostrar el funcionamiento de scanf, printf,\n");
-printf("testdos\t Muestra un cambio en los registros");
-printf("\n");
+printf("testdos\t Muestra un cambio en los registros\n");
 printf("troll  \t Comando sorpresa \n");
-
-
-
 }
 int troll(){
 	cursor=0;
@@ -134,8 +130,9 @@ char s[20];
 	s[i]='\0';
 
 printf("Bienvenido wachiturro %s \n\n",s);
-printf("Los comandos disponibles son los siguientes\n\n");
+printf("Los comandos disponibles son los siguientes\n");
 man();
+return;
 }
 
 void testdos(){
@@ -234,4 +231,6 @@ int printNum(int num){
 	printf("%d",num);
 }
 
-//mkiso
+void printCapacity(unsigned int lba, unsigned int blockLength){
+    printf("Capacity = %d", (lba+1)*blockLength);
+}
