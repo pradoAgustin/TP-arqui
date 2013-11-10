@@ -23,6 +23,7 @@ GLOBAL read_segment_gs
 GLOBAL read_segment_ds
 GLOBAL read_segment_es
 GLOBAL _opencd
+GLOBAL _cambiar_registros
 EXTERN  int_08
 EXTERN  int_09
 EXTERN printStatus
@@ -106,7 +107,7 @@ _int_09_hand:               ; Handler de INT9 (Teclado)
     push gs                  
     mov eax,0
     in al,060h              ; Le pido el scancode al teclado.
-    call _storeregisters
+    call _store_registers
     push eax
 
     call int_09
@@ -132,16 +133,16 @@ outportb:
     pop ebp
     ret
 
-_storeregisters:
+_store_registers:
     mov edx,0
     mov ebx,esp
-giro:
+loop:
     add ebx,4
     mov ecx,[ebx]
     mov [registers+edx],ecx
     add edx,4
-    cmp edx,64
-    jne giro
+    cmp edx,60
+    jne loop
     ret
 
 read_segment_cs:
@@ -234,6 +235,11 @@ read_register_eax:
    
     mov eax, [registers+54]
     ret
+
+_cambiar_registros:
+    mov eax, ebx
+    mov ebx, 0
+    mov ecx,15
 
 cambiar_eax:
 mov eax, ebx

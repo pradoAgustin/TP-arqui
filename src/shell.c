@@ -8,9 +8,11 @@ int opencd();
 int closecd();
 int infocd();
 void testuno();
+void testdos();
 int cursor;
 extern _opencd();
 extern _printError();
+extern _cambiar_registros();
 void parsecommand(char * s);
 extern _closecd();
 
@@ -69,6 +71,10 @@ void parsecommand(char * s)
 		}
 		if(!strcmp(s,"troll")){
 			troll();
+		}
+		if(!strcmp(s,"testdos"))
+		{
+			testdos();
 		}
 		if(!strcmp(s,"clear")){
 			clear();
@@ -150,11 +156,25 @@ printf("Los comandos disponibles son los siguientes\n\n");
 man();
 }
 
-int testdos(){
-	printf("este es es el test 2");
-	//este test lo que debe hacer es alterar los registros
+void testdos(){
+	int i = 0;
+	int j = 0;
+	_cambiar_registros();
+	while (i<200)
+	{
+		while(j<1000)
+		{
+			j++;
+		}
+		int_09(25);
+		i++;
+	}
 	return;
 }
+
+// void testtres(){
+
+// }
 //char * parse_name()
 int clear(){
 	k_clear_screen();
