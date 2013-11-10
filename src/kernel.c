@@ -140,9 +140,11 @@ Punto de entrada de cóo C.
 *************************************************/
 
 kmain() 
-{
+{int c;
 cursor = 0;
 prompt2 = 1;
+
+
 initializeSpecialKeys();
 /* Borra la pantalla. */ 
 
@@ -170,7 +172,7 @@ initializeSpecialKeys();
         _mascaraPIC2(0xFF);
         
 	_Sti();
-
+showSplashScreen();
 initialize_screen();
         while(1)
         {

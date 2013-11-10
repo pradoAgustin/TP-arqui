@@ -3,23 +3,6 @@
 #include "../include/kc.h"
 
 
-//preguntas
-
-//para eflags tengo q acceder al stack(cs ip eflags) iret en la interrupcion de teclado
-//shell???? separacion video y shell, diferencias
-//getchar(parece demasiado simple el mio )
-//int 80?
-//driver de video? 
-//2 buffers? 3???? ejemplo hola pepe, borra ->hola mundo
-//esta bien mi acceso a registros o es un poco villero?
-// pasos atapi, ingresar a todos los buses y todo los devices! ir preguntando cual es el que tiene el controlador de ata y dsp la funcionalidad del ata
-// int 09 llama al writeBuffer y tmb a readBuffer o quien termina imprimiendo en pantalla
-//puede ser que si tipeo rapido hay caracteres que se los saltea?
-// no encuentro donde esta el cursor para q vayan los 2 a la par
-//que otra opcion habria a usar cursor como variable global que no sea pasasrla por parametro??
-//mis registros estan cambiando(si pongo por ejemplo un while 1 printf) pero no se si estan bien, tengo forma de comprobarlo?
-//no puedo solucionar de pasarle stdout 1 y stdout2 a putchar
-
 /* __write
 *
 * Recibe como parametros:

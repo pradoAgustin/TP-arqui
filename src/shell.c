@@ -7,9 +7,11 @@ extern _cambiar_registros();
 extern _iniciar_contador();
 extern _contar_caracteres();
 extern _closecd();
-void testscanf(void);
+void clear_down();
+
 void shell(){
 char s[20];
+char lista[20][20];
 int i=0;
 char c;
 	while( ((c=getchar()) != '\n')){
@@ -29,6 +31,7 @@ char c;
 	putc(c,1);
 	s[i]='\0';
 	parsecommand(s);
+
 }
 
 void parsecommand(char * s)
@@ -44,7 +47,7 @@ void parsecommand(char * s)
 			printf("Cerrando cd :)\n");
 			closecd();
 		}
-		if(!strcmp(s,"testuno")){
+		if(!strcmp(s,"test1")){
 			testuno();
 		}
 		if(!strcmp(s,"infocd")){
@@ -57,7 +60,7 @@ void parsecommand(char * s)
 		if(!strcmp(s,"troll")){
 			troll();
 		}
-		if(!strcmp(s,"testdos"))
+		if(!strcmp(s,"test2"))
 		{
 			testdos();
 		}
@@ -66,6 +69,9 @@ void parsecommand(char * s)
 		}
 		if(!strcmp(s,"testscanf")){
 		testscanf();
+		}
+		if(!strcmp(s,"clear2")){
+		clear_down();
 		}
 return;
 }	
@@ -82,7 +88,7 @@ printf("troll  \t Comando sorpresa \n");
 int troll(){
 	cursor=0;
 	k_clear_screen();
- printf("                  {}\n");
+printf("                  {}\n");
 printf("  ,   A           {}\n");
 printf(" / \\, | ,        .--.\n");
 printf("|  =|= >        /.--.\\\n");
@@ -91,7 +97,7 @@ printf("  `   |         |`::`|\n");
 printf("      |     .-;`\\..../`;_.-^-._\n");
 printf("     /\\\\/  /  |...::..|`   :   `|\n");
 printf("     |:'\\ |   /'''::''|   .:.   |\n");
-printf("      \\ /\\;-,/\\   ::  |..ASCII..|\n");
+printf("      \\ /\\;-,/\\   ::  |..ARQUI..|\n");
 printf("      |\\ <` >  >._::_.| ':ART:' |\n");
 printf("      | `""`_/   ^^/>/>  |   ':'   |\n");
 printf("      |       |       \\    :   /\n");
@@ -102,14 +108,18 @@ printf("      |        <_ >< _>\n");
 printf("      |        |  ||  |\n");
 printf("      |        |  ||  |\n");
 printf("      |       _\\.:||:./_\n");
-printf("      | jgs  /____/\\____\\\n");
+printf("      |      /____/\\____\\\n");
 printf("\n");
  }
+
 void testuno(){
 printf("Bienvenido a nuestro sistema operativo para wachiturros\n");
 printf("Ingrese su nombre o tirese un paso \n");
+
 testscanf();
+
 man();
+
 return;
 }
 
@@ -132,8 +142,10 @@ char d[20];
 
 	scanf("%s",d);
 	printf("\nBienvenido wachiturro %s\n\n",d);
-
-
+}
+void clear_down(void){
+k_clear_screen2();
+initialize_screen();
 }
 
 
