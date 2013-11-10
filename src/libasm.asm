@@ -7,6 +7,8 @@ GLOBAL read_register_eax, read_register_ebx, read_register_ecx, read_register_ed
 GLOBAL read_register_edi, read_register_ebp, read_register_esp, read_segment_cs, read_segment_ss
 GLOBAL read_segment_fs, read_segment_gs, read_segment_ds, read_segment_es, read_flags
 GLOBAL _cambiar_registros
+GLOBAL _iniciar_contador
+GLOBAL _contar_caracteres
 EXTERN  int_08, int_09
 EXTERN printStatus
 GLOBAL  _printError
@@ -217,11 +219,20 @@ read_register_eax:
    
     mov eax, [registers+54]
     ret
+_iniciar_contador:
+    xor ecx,ecx
+
+_contar_caracteres:
+    add ecx,1
 
 _cambiar_registros:
-    mov eax, ebx
-    mov ebx, 0
-    mov ecx,15
+    mov eax, 0
+loopbis:
+    add eax,1
+    cmp eax, 500000
+    jne loopbis
+    mov eax,0
+    ret
 
 _outl:
     push ebp 

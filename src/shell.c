@@ -4,6 +4,8 @@
 extern _opencd();
 extern _printError();
 extern _cambiar_registros();
+extern _iniciar_contador();
+extern _contar_caracteres();
 extern _closecd();
 
 void shell(){
@@ -138,20 +140,15 @@ man();
 
 void testdos(){
 	int i = 0;
-	int j = 0;
-	_cambiar_registros();
-	// while (i<200)
-	// {
-	// 	while(j<1000)
-	// 	{
-	// 		j++;
-	// 	}
-	// 	int_09(25);
-	// 	i++;
-	// }
-	// return;
-
-
+	_iniciar_contador();
+	while (i<1000)
+	{
+		_cambiar_registros();
+		_contar_caracteres();
+		putc(25,1);
+		i++;
+	}
+	return;
 }
 
 // void testtres(){
