@@ -4,7 +4,7 @@
 DESCR_INT idt[0xA];			/* IDT de 10 entradas*/
 IDTR idtr;				/* IDTR */
 int tickpos=640;
-	
+//extern _int_80_hand
 
 void initializeSpecialKeys(){
 	k.r_control=0;
@@ -13,6 +13,19 @@ void initializeSpecialKeys(){
 	k.l_control=0;
 	
 }
+#define WRITE 0
+#define READ 1
+
+void int_80(unsigned int sysCall, unsigned int arg1, int arg2, int arg3, int arg4, int arg5){
+   if(sysCall==WRITE)
+            __write((int)arg1, (void *)arg2, (int)arg3);
+           
+    else if(sysCall==READ) 
+            __read((int)arg1, (void *)arg2,(int)arg3);
+    
+}
+
+
 
 void int_08() {
 
@@ -140,6 +153,8 @@ initializeSpecialKeys();
 
         setup_IDT_entry (&idt[0x08], 0x08, (dword)&_int_08_hand, ACS_INT, 0);
 		setup_IDT_entry (&idt[0x09], 0x08, (dword)&_int_09_hand, ACS_INT, 0);
+		setup_IDT_entry (&idt[0x80], 0x08, (dword)&_int_80_hand, ACS_INT, 0);
+
 /* Carga de IDTR    */
 
 	idtr.base = 0;  

@@ -1,5 +1,5 @@
 GLOBAL  _read_msw,_lidt
-GLOBAL  _int_08_hand, _int_09_hand
+GLOBAL  _int_08_hand, _int_09_hand, _int_80_hand
 GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
 GLOBAL outportb
@@ -7,12 +7,12 @@ GLOBAL read_register_eax, read_register_ebx, read_register_ecx, read_register_ed
 GLOBAL read_register_edi, read_register_ebp, read_register_esp, read_segment_cs, read_segment_ss
 GLOBAL read_segment_fs, read_segment_gs, read_segment_ds, read_segment_es, read_flags
 GLOBAL _cambiar_registros
-EXTERN  int_08, int_09
+EXTERN  int_08, int_09, int_80
 EXTERN printStatus
 GLOBAL  _printError
 EXTERN printNum
 GLOBAL  _opencd, _closecd, _infocd
-
+EXTERN printCapacity
 
 SECTION .bss
     registers resb 70
@@ -100,7 +100,20 @@ _int_09_hand:               ; Handler de INT9 (Teclado)
     popf                    ; Restauro todos los flags.
     popad                   ; Restauro todos los registros.
     iretd
-    
+
+_int_80_hand:
+    push ebp
+    mov ebp, esp
+    push edi
+    push esi
+    push edx
+    push ecx
+    push ebx
+    push eax
+    call int_80
+    mov esp, ebp
+    pop ebp
+    iret
 
 
 outportb:
@@ -297,36 +310,16 @@ mov al, 0x1E
 out dx, al
 
 mov al, 0 
+out dx, al 
 out dx, al
-
-mov al, 0 
+out dx, al 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
+out dx, al 
+out dx, al 
+out dx, al 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
 out dx, al
 
 call _pollBSY 
@@ -345,11 +338,7 @@ out dx, al
 
 mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
 
 mov al, 2 
@@ -357,23 +346,11 @@ out dx, al
 
 mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
 
 ;mov eax, 0
@@ -388,7 +365,6 @@ ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;pollDRDY no hace falta
 ;;pollbsy es fijarse si busy no esta en 1
 ;;polldrq es fijarse que drq este en 1
 ;;0x1E  y todo cero es para habilitar la lectora
@@ -455,46 +431,25 @@ jne loop97
 call _pollBSY 
 call _pollDRQ
 
-mov dx, 0x1F0 
+;mov dx, 0x1F0 
 
-mov al, 0x1E 
-out dx, al
+;mov al, 0x1E 
+;out dx, al
+;mov al,0
+;out dx, al
+;out dx, al
+;out dx, al
+;out dx, al
+;out dx, al
+;out dx, al
+;out dx, al
+;out dx, al
+;out dx, al
+;out dx, al
+;out dx, al
 
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-call _pollBSY 
-call _pollDRDY
+;call _pollBSY 
+;call _pollDRDY
 
 mov dx, 0x1F7 
 
@@ -510,11 +465,7 @@ out dx, al
 
 mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
 
 mov al, 3 
@@ -522,23 +473,11 @@ out dx, al
 
 mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
-
-mov al, 0 
 out dx, al
 
 mov eax, 0
@@ -547,134 +486,78 @@ in eax, dx
 push eax
 call printStatus
 pop eax
-
-
 call _pollBSY
 ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 _infocd:
 
-call _pollBSY
+ call _pollUntilNotBusy
+    xor ax, ax
+    mov dx, 0x1f6
+    out dx, ax ;Select master device
+    
+    mov ecx, 0xffff
+waitloop3:
+    loopnz waitloop3
+    
+    mov dx, 0x1f1
+    out dx, ax ;Set Features register to 0
+    mov dx, 0x1f4
+    mov ax, 0x08
+    out dx, ax ;Set LBA1 register to 0x0008
+    mov dx, 0x1f5
+    out dx, ax ;Set LBA2 register to 0x0008
+    mov dx, 0x1f7
+    mov al, 0xa0
+    out dx, al ;Send packet command
+    call _pollUntilNotBusy
+   ; call _pollDRQ
+    mov dx, 0x1f0
+    mov al, 0x25 ;Read capacity command
+    out dx, al
+    xor ax, ax
+    out dx, al
+    out dx, ax
+    out dx, ax
+    out dx, ax
+    out dx, ax
+    out dx, ax
+    call _pollUntilNotBusy
+    ;call _pollDRQ
+    mov ecx, 4
+    xor ebx, ebx
+getCapacityInfo:
+    in ax, dx
+    mov [array+ebx], ax
+    add ebx, 2
+    loopnz getCapacityInfo
 
-mov ax, 00h 
-mov dx, 0x1F6 
-out dx, ax ; al puerto 1f6 mando un cero
+    mov eax, [array]
+    mov ebx, [array+4]
+    push ebx
+    push eax
+    call printCapacity
+    add esp, 8
+    ;call _pollUntilNotBusy
+    ret
 
-mov dx, 0x1F1
-mov ax, 0 
-out dx, ax ; al puerto 1f1 mando un cero
+_pollUntilNotBusy:
+    mov dx, 0x1f7
+cycleBSY:
+    in al, dx ;Read from status register
+    and al, 0x80 ;Check leftmost bit to see if drive is busy
+    jnz cycleBSY ;While busy, keep querying until drive is available
+    ret
 
-;call _pollDRDY
-mov dx, 0x1F7 
-mov ax, 0xA0 
-out dx, ax ; al puerto 1f7 mando el A0
-
-; puede pasar q tarde un cacho 
-mov ebx, 65000
-loop982: 
-dec ebx
-cmp ebx, 0
-jne loop982
-
-call _pollBSY 
-call _pollDRQ
-
-mov dx, 0x1F0 
-
-mov al, 0xA8
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-call _pollBSY 
-call _pollDRDY
-
-mov dx, 0x1F7 
-mov ax, 0xA0 
-out dx, ax
-
-call _pollBSY 
-call _pollDRQ
-
-mov dx, 0x1f0
-mov al, 0x25
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov eax, 0
-mov dx, 0x1f7
-
-in eax, dx
-push eax
-call printStatus
-pop eax
-
-call _pollBSY
-ret
+_pollUntilDataRequest:
+    mov dx, 0x1f7
+cycleDRQ:
+    in al, dx ;Read from status register
+    and al, 0x08 ;Check 3rd bit (Data transfer Requested flag)
+    jz cycleDRQ ;While there are data transfer requests, keep cycling
+    ret
 
 
 ;A medium is any media inserted in the ATAPI Drive, like a CD or a DVD. By using the 'SCSI Read Capacity' command, ;you can read the last LBA of the medium, then you calculate the medium's capacity using this relationship:
@@ -693,3 +576,6 @@ ret
    ; Sending the ATAPI Packet, then polling.
    ; If there isn't an error, reading 4 Words [8 bytes] from the DATA Register. 
 
+
+section .bss
+    array resb 8

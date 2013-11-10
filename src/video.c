@@ -1,7 +1,5 @@
 #include "../include/defs.h"
 #include "../include/kc.h"
-
-
 /***************************************************************
 *k_scroll
 * scrolleaaa.//la parte de abajo solo
@@ -64,7 +62,7 @@ print_registers(){
 			cursor=1280;
 			printf("eflags \t%x \t[PF ZF IF ID]", flags);// PF=PARITY FLAG, ZF=ZERO FLAG, IF=INTERRUMPT ENABLE FLAG ID=ID FLAG
 			cursor=cursoraux;
-			printf("\n");
+			update_cursor();
 }
 
 
