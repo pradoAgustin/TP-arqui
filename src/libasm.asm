@@ -31,67 +31,71 @@ EXTERN printNum
 GLOBAL _closecd
 GLOBAL _infocd
 GLOBAL cambiar_eax
+
+SECTION .bss
+    registers resb 70
+
 SECTION .text
 
 
 _Cli:
-	cli			; limpia flag de interrupciones
-	ret
+    cli         ; limpia flag de interrupciones
+    ret
 
 _Sti:
 
-	sti			; habilita interrupciones por flag
-	ret
+    sti         ; habilita interrupciones por flag
+    ret
 
-_mascaraPIC1:			; Escribe mascara del PIC 1
-	push    ebp
+_mascaraPIC1:           ; Escribe mascara del PIC 1
+    push    ebp
         mov     ebp, esp
         mov     ax, [ss:ebp+8]  ; ax = mascara de 16 bits
-        out	21h,al
+        out 21h,al
         pop     ebp
         retn
 
-_mascaraPIC2:			; Escribe mascara del PIC 2
-	push    ebp
+_mascaraPIC2:           ; Escribe mascara del PIC 2
+    push    ebp
         mov     ebp, esp
         mov     ax, [ss:ebp+8]  ; ax = mascara de 16 bits
-        out	0A1h,al
+        out 0A1h,al
         pop     ebp
         retn
 
 _read_msw:
-        smsw    ax		; Obtiene la Machine Status Word
+        smsw    ax      ; Obtiene la Machine Status Word
         retn
 
 
-_lidt:				; Carga el IDTR
+_lidt:              ; Carga el IDTR
         push    ebp
         mov     ebp, esp
         push    ebx
         mov     ebx, [ss: ebp + 6] ; ds:bx = puntero a IDTR 
-	rol	ebx,16		    	
-	lidt    [ds: ebx]          ; carga IDTR
+    rol ebx,16              
+    lidt    [ds: ebx]          ; carga IDTR
         pop     ebx
         pop     ebp
         retn
 
 
-_int_08_hand:				; Handler de INT 8 ( Timer tick)
+_int_08_hand:               ; Handler de INT 8 ( Timer tick)
         push    ds
         push    es                      ; Se salvan los registros
         pusha                           ; Carga de DS y ES con el valor del selector
-        mov     ax, 10h			; a utilizar.
+        mov     ax, 10h         ; a utilizar.
         mov     ds, ax
         mov     es, ax                  
         call    int_08                 
-        mov	al,20h			; Envio de EOI generico al PIC
-	out	20h,al
-	popa                            
+        mov al,20h          ; Envio de EOI generico al PIC
+    out 20h,al
+    popa                            
         pop     es
         pop     ds
         iret
         
-_int_09_hand:			    ; Handler de INT9 (Teclado)
+_int_09_hand:               ; Handler de INT9 (Teclado)
     pushad                  ; Buckupea todos los registros.
     pushf                    ; Backupea todos los flags.
     push cs
@@ -102,13 +106,13 @@ _int_09_hand:			    ; Handler de INT9 (Teclado)
     push gs                  
     mov eax,0
     in al,060h              ; Le pido el scancode al teclado.
-    ;call save_registers
+    call _storeregisters
     push eax
 
     call int_09
     pop eax
     add esp,24
-    mov	al,20h			    ; Le mando el EOI generico al PIC.
+    mov al,20h              ; Le mando el EOI generico al PIC.
     out 20h,al
     popf                    ; Restauro todos los flags.
     popad                   ; Restauro todos los registros.
@@ -128,11 +132,23 @@ outportb:
     pop ebp
     ret
 
+_storeregisters:
+    mov edx,0
+    mov ebx,esp
+giro:
+    add ebx,4
+    mov ecx,[ebx]
+    mov [registers+edx],ecx
+    add edx,4
+    cmp edx,64
+    jne giro
+    ret
+
 read_segment_cs:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+36];[esp+32]
+    mov eax, [registers+20];[esp+32]
 
     mov esp, ebp
     pop ebp
@@ -142,142 +158,81 @@ read_segment_ss:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp+32];[esp+28]
+    mov eax, [registers+16];[esp+28]
 
     mov esp, ebp
     pop ebp
     ret
 
 read_segment_ds:
-    push ebp
-    mov ebp, esp
 
-    mov eax, [esp +28];[esp+24]
-
-    mov esp, ebp
-    pop ebp
+    mov eax, [registers+12];[esp+24]
     ret
 
 read_segment_es:
-    push ebp
-    mov ebp, esp
 
-    mov eax, [esp+24];[esp+20]
-
-    mov esp, ebp
-    pop ebp
+    mov eax, [registers+8];[esp+20]
     ret
 
 read_segment_fs:
-    push ebp
-    mov ebp, esp
 
-    mov eax, [esp+20];[esp+16]
-
-    mov esp, ebp
-    pop ebp
+    mov eax, [registers+4];[esp+16]
     ret
 
 read_segment_gs:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+16];[esp+12]
-
-    mov esp, ebp
-    pop ebp
+    mov eax, [registers];[esp+12]
     ret
 
 
 
 read_flags:
-    push ebp
-    mov ebp, esp
 
-    mov eax, [esp+40];[esp+36]
-
-    mov esp, ebp
-    pop ebp
+    mov eax, [registers+24];[esp+36]
     ret
 
 read_register_edi:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+44];[esp+40]
-
-    mov esp, ebp
-    pop ebp
+    
+    mov eax, [registers+28];[esp+40]
     ret
 
 read_register_esi:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+48];[esp+44]
-
-    mov esp, ebp
-    pop ebp
+   
+    mov eax, [registers+32];[esp+44]
     ret
 
 read_register_ebp:
-    push ebp
-    mov ebp, esp
 
-    mov eax, [esp +52];[esp+48]
-
-    mov esp, ebp
-    pop ebp
+    mov eax, [registers+36];[esp+48]
     ret
 
 read_register_esp:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+56];[esp+52]
-
-    mov esp, ebp
-    pop ebp
+ 
+    mov eax, [registers+40];[esp+52]
     ret
 
 read_register_ebx:
     push ebp
     mov ebp, esp
 
-    mov eax, [esp +60];[esp+56]
+    mov eax, [registers+44];[esp+56]
 
     mov esp, ebp
     pop ebp
     ret
 
 read_register_edx:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+64];[esp+60]
-
-    mov esp, ebp
-    pop ebp
+ 
+    mov eax, [registers+48];[esp+60]
     ret
 
 read_register_ecx:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+68];[esp+64]
-
-    mov esp, ebp
-    pop ebp
+   
+    mov eax, [registers+52];[esp+64]
     ret
 
 read_register_eax:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [esp+72]
-
-    mov esp, ebp
-    pop ebp
+   
+    mov eax, [registers+54]
     ret
 
 cambiar_eax:
@@ -330,14 +285,14 @@ _outl:
     ret 
     
 _inl: 
-	push ebp 
-	mov ebp, esp 
-	xor eax, eax 
-	mov dx, word[ebp+8] 
-	in eax, dx 
-	mov esp, ebp 
-	pop ebp 
-	ret
+    push ebp 
+    mov ebp, esp 
+    xor eax, eax 
+    mov dx, word[ebp+8] 
+    in eax, dx 
+    mov esp, ebp 
+    pop ebp 
+    ret
 
 ; Debug para el BOCHS, detiene la ejecució; Para continuar colocar en el BOCHSDBG: set $eax=0
 ;
@@ -346,23 +301,14 @@ _inl:
 _debug:
         push    bp
         mov     bp, sp
-        push	ax
-vuelve:	mov     ax, 1
-        cmp	ax, 0
-	jne	vuelve
-	pop	ax
-	pop     bp
+        push    ax
+vuelve: mov     ax, 1
+        cmp ax, 0
+    jne vuelve
+    pop ax
+    pop     bp
         retn
 
-;save_registers:
- ;   mov si,0
-;loop:
-;    mov eax, [esi+si]
-;    mov [buffer+si], eax
-;    mov si, esi+4
-;    cmp si, 68
-;    jne loop
-;    ret
 
 ;section .bss
 ;    buffer resb 64
