@@ -3,7 +3,7 @@
 #include "../include/kc.h"
 #include "../include/stdarg.h"
 #include "../include/buffer.h"
-
+int printf( char * fmt, ...);
 /***************************************************************
 *  Funciones de entrada y salida de caracteres
 ****************************************************************/
@@ -21,7 +21,9 @@ char getchar(){
 *  getc (si)
 ****************************************************************/
 int getc(FILE * stream){
-	return __read(1,1,1);
+	while( __read(1,1,1) == 0)
+		return 0 ;
+	return getc((FILE *)1);
 }
 
 /***************************************************************
@@ -84,14 +86,18 @@ int scanf(const char * fmt, ...){
 	int read=0,i=0, c,k, j = 0;
 	va_start(ap, fmt); //hace que ap apunte al 1er arg sin nombre
 	char s[BUFFER_SIZE];
-	while((c = getc(&fp)) != '\n' && i < BUFFER_SIZE)
+	while((c = getchar()) != '\n' && i < BUFFER_SIZE)
 	{
-		if(c == '\b' && i >= 1)
-			i--;
-		if(c != '\b')
-		{
-			s[i] = c;
-			i++;
+		if(c!=0){
+			if(c == '\b' && i >= 1){
+				i--;
+				putc(c ,(FILE*)1);
+			}
+			if(c != '\b' && c!='\n'){
+				s[i] = c;
+				i++;
+				putc(c ,(FILE *)1);	
+			}
 		}
 	}
 	s[i] = '\0';
@@ -176,7 +182,6 @@ int scanf(const char * fmt, ...){
 	va_end(ap); // clean up when done
 	return read;
 }
-
 
 
 /***************************************************************

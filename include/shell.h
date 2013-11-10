@@ -9,4 +9,4 @@ int infocd();
 void testuno();
 void testdos();
 void parsecommand(char * s);
-
+void testscanf(void);

@@ -119,13 +119,13 @@ void int_09(char c){
 		else if((k.r_shift==1 || k.l_shift==1) || k.Bloq_Mayus){//ojo aca! no printefear, guardar en buffer
 			d=scanCodeToASCIIshifted(c);
 
-			 if(d-64<0 && d!=10 && d!=32 && d!=8&& d!=15)
-			 	return;	
+			 if(d<0 && d!=10 && d!=32 && d!=8&& d!=15)
+			 	return;//64	d-47<0 
 			storeInBuffer(d);	
 			
 		}
-		else if((d=scanCodeToASCII(c))-80<0 && d!=10 && d!=32 && d!=8 && d!=15)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
-			return;
+		else if((d=scanCodeToASCII(c))<0 && d!=10 && d!=32 && d!=8 && d!=15)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
+			return;//80
 		
 		else
 		{

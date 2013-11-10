@@ -7,7 +7,7 @@ extern _cambiar_registros();
 extern _iniciar_contador();
 extern _contar_caracteres();
 extern _closecd();
-
+void testscanf(void);
 void shell(){
 char s[20];
 int i=0;
@@ -64,6 +64,9 @@ void parsecommand(char * s)
 		if(!strcmp(s,"clear")){
 			clear();
 		}
+		if(!strcmp(s,"testscanf")){
+		testscanf();
+		}
 return;
 }	
 
@@ -105,32 +108,7 @@ printf("\n");
 void testuno(){
 printf("Bienvenido a nuestro sistema operativo para wachiturros\n");
 printf("Ingrese su nombre o tirese un paso \n");
-char c;
-int i=0;
-char * n;
-char s[20];
-	while( ((c=getchar()) != '\n')){
-		if(c!=0){
-			if(c == '\b' && i >= 1){
-			i--;
-			putc(c ,1);
-		}
-		if(c != '\b' && c!='\n')
-		{
-			s[i] = c;
-			i++;
-			putc(c ,1);
-			
-		}
-		
-	}
-}
-
-	putc(c,1);
-	s[i]='\0';
-
-printf("Bienvenido wachiturro %s \n\n",s);
-printf("Los comandos disponibles son los siguientes\n");
+testscanf();
 man();
 return;
 }
@@ -148,10 +126,17 @@ void testdos(){
 	return;
 }
 
-// void testtres(){
+void testscanf(void){
+char c;
+char d[20];
 
-// }
-//char * parse_name()
+	scanf("%s",d);
+	printf("\nBienvenido wachiturro %s\n\n",d);
+
+
+}
+
+
 int clear(){
 	k_clear_screen();
 	initialize_screen();
