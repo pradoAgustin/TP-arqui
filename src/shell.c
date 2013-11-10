@@ -110,6 +110,10 @@ printf("      |        |  ||  |\n");
 printf("      |       _\\.:||:./_\n");
 printf("      |      /____/\\____\\\n");
 printf("\n");
+
+{int i=0;
+while(i<50000000){i++;}}
+initialize_screen();
  }
 
 void testuno(){
