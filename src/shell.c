@@ -3,7 +3,7 @@
 #include "../include/shell.h"
 extern _opencd();
 extern _printError();
-extern _cambiar_registros();
+extern _delay();
 extern _iniciar_contador();
 extern _contar_caracteres();
 extern _closecd();
@@ -140,7 +140,7 @@ void testdos(){
 	_iniciar_contador();
 	while (i<1000)
 	{
-		_cambiar_registros();
+		_delay();
 		_contar_caracteres();
 		putc(25,1);
 		i++;

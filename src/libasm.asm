@@ -6,7 +6,7 @@ GLOBAL outportb
 GLOBAL read_register_eax, read_register_ebx, read_register_ecx, read_register_edx, read_register_esi
 GLOBAL read_register_edi, read_register_ebp, read_register_esp, read_segment_cs, read_segment_ss
 GLOBAL read_segment_fs, read_segment_gs, read_segment_ds, read_segment_es, read_flags
-GLOBAL _cambiar_registros
+GLOBAL _delay
 GLOBAL _iniciar_contador
 GLOBAL _contar_caracteres
 EXTERN  int_08, int_09, int_80
@@ -238,7 +238,7 @@ _iniciar_contador:
 _contar_caracteres:
     add ecx,1
 
-_cambiar_registros:
+_delay:
     mov eax, 0
 loopbis:
     add eax,1
