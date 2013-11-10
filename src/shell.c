@@ -1,26 +1,14 @@
 #include "../include/buffer.h"
-buffer buf;
-int echo ();
-int man();
-int troll();
-int test1();
-int opencd();
-int closecd();
-int infocd();
-void testuno();
-void testdos();
-int cursor;
+#include "../include/defs.h"
+#include "../include/shell.h"
 extern _opencd();
 extern _printError();
 extern _cambiar_registros();
-void parsecommand(char * s);
 extern _closecd();
 
 void shell(){
 char s[20];
 int i=0;
-int j,a;
-
 char c;
 	while( ((c=getchar()) != '\n')){
 		if(c!=0){
@@ -32,19 +20,14 @@ char c;
 		{
 			s[i] = c;
 			i++;
-			putc(c ,1);
-			
+			putc(c ,1);	
 		}
-		
-	}// si atapi retorna 1 esta todo bien sino no
+	}
 }
-//enter();
 	putc(c,1);
 	s[i]='\0';
-
 	parsecommand(s);
 }
-	// buf.read = buf.write;
 
 void parsecommand(char * s)
 {	
@@ -79,9 +62,6 @@ void parsecommand(char * s)
 		if(!strcmp(s,"clear")){
 			clear();
 		}
-		//else 
-			//printf("comando invalido\n");
-		
 return;
 }	
 
@@ -186,11 +166,11 @@ int clear(){
 int clearup(){
 	k_clear_upper_screen();
 }
+
 int opencd(){
 	_opencd();
 	printf("ya esta\n");
 }
-
 
 int closecd(){
 	_closecd();

@@ -1,37 +1,18 @@
 GLOBAL  _read_msw,_lidt
-GLOBAL  _int_08_hand
+GLOBAL  _int_08_hand, _int_09_hand
 GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
-GLOBAL _int_09_hand
-GLOBAL outportb32
-GLOBAL inportb32
 GLOBAL outportb
-GLOBAL inportb
-GLOBAL read_flags
-GLOBAL read_register_eax
-GLOBAL read_register_ebx
-GLOBAL read_register_ecx
-GLOBAL read_register_edx
-GLOBAL read_register_esi
-GLOBAL read_register_edi
-GLOBAL read_register_ebp
-GLOBAL read_register_esp
-GLOBAL read_segment_cs
-GLOBAL read_segment_ss
-GLOBAL read_segment_fs
-GLOBAL read_segment_gs
-GLOBAL read_segment_ds
-GLOBAL read_segment_es
-GLOBAL _opencd
+GLOBAL read_register_eax, read_register_ebx, read_register_ecx, read_register_edx, read_register_esi
+GLOBAL read_register_edi, read_register_ebp, read_register_esp, read_segment_cs, read_segment_ss
+GLOBAL read_segment_fs, read_segment_gs, read_segment_ds, read_segment_es, read_flags
 GLOBAL _cambiar_registros
-EXTERN  int_08
-EXTERN  int_09
+EXTERN  int_08, int_09
 EXTERN printStatus
 GLOBAL  _printError
 EXTERN printNum
-GLOBAL _closecd
-GLOBAL _infocd
-GLOBAL cambiar_eax
+GLOBAL  _opencd, _closecd, _infocd
+
 
 SECTION .bss
     registers resb 70
@@ -242,45 +223,6 @@ _cambiar_registros:
     mov ebx, 0
     mov ecx,15
 
-cambiar_eax:
-mov eax, ebx
-
-
-inportb:
-    push ebp
-    mov ebp, esp
-    
-    mov eax, 0
-    mov dx, word[ebp + 8]  ;en EAX pongo el primer parametro port
-    in al, dx
-    
-    mov esp,ebp
-    pop ebp
-    ret
-    
-outportb32:
-    push ebp
-    mov ebp, esp
-    
-    mov dx,word[ebp + 8]    ;en EAX pongo el primer parametro port
-    mov eax,dword[ebp + 12] ;en EBX pongo el segundo parametro source
-    out dx, eax
-
-    mov esp, ebp
-    pop ebp
-    ret
-
-inportb32:
-    push ebp
-    mov ebp, esp
-    
-    mov eax, 0
-    mov dx, word[ebp + 8]  ;en EAX pongo el primer parametro port
-    in eax, dx
-    
-    mov esp,ebp
-    pop ebp
-    ret
 _outl:
     push ebp 
     mov ebp, esp

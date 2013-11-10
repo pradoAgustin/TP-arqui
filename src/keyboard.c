@@ -2,8 +2,8 @@ extern char read();
 #include "../include/defs.h"
 #include "../include/keyboard.h"
 #include "../include/buffer.h"
-int prompt2;
-buffer buf;
+
+
 /***************************************************************
 *scanCodeToASCII
 ****************************************************************/
@@ -34,7 +34,6 @@ void enter(){
 	}else
 	cursor += 160 - cursor%160;
 	prompt();
-	//cambiar_eax();
 }
  
 /***************************************************************

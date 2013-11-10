@@ -25,8 +25,12 @@
 #define POSITION 0xb8000
 #define TAB 8
 int cursor;
+int prompt2;
+int flags[5];
+int cursoraux;
 
-
+#define BUFFER_SIZE 20
+#define EOF -1
 #define ACS_CODE        (ACS_PRESENT | ACS_CSEG | ACS_READ)
 #define ACS_DATA        (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 #define ACS_STACK       (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
@@ -91,6 +95,9 @@ typedef struct{
 	int gs;
 }segments;
      
+specialKeys k;
+segments s;
+registers w;
 
 #endif
 

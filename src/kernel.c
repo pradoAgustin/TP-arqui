@@ -3,25 +3,16 @@
 #include "../include/buffer.h"
 DESCR_INT idt[0xA];			/* IDT de 10 entradas*/
 IDTR idtr;				/* IDTR */
-int cursoraux;
 int tickpos=640;
-int prompt2;
-int flags[5];
-int i;
+	
 
-specialKeys k;
-segments s;
-registers w;
-
-
-//initializeSpecialKeys();
 void initializeSpecialKeys(){
 	k.r_control=0;
 	k.r_shift=0;
 	k.l_shift=0;
 	k.l_control=0;
 	
-}	
+}
 
 void int_08() {
 
@@ -129,8 +120,6 @@ void int_09(char c){
 		storeInBuffer(d);
 		}
 
-  // __read(1,1,1);
-
 }
 /**********************************************
 kmain() 
@@ -141,9 +130,7 @@ kmain()
 {
 cursor = 0;
 prompt2 = 1;
-i=0;
- //initializeBuffer();
- initializeSpecialKeys();
+initializeSpecialKeys();
 /* Borra la pantalla. */ 
 
 	k_clear_screen();

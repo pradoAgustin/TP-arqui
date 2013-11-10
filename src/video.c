@@ -1,11 +1,7 @@
 #include "../include/defs.h"
 #include "../include/kc.h"
-int cursoraux;
-//int registers[20];
-int flags[5];
-//int segments[6];
-registers w;
-segments s;
+
+
 /***************************************************************
 *k_scroll
 * scrolleaaa.//la parte de abajo solo

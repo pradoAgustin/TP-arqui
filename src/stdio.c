@@ -3,10 +3,7 @@
 #include "../include/kc.h"
 #include "../include/stdarg.h"
 #include "../include/buffer.h"
-int prompt2;
-#define BUFFER_SIZE 20
-#define EOF -1
-buffer buf;
+
 /***************************************************************
 *  Funciones de entrada y salida de caracteres
 ****************************************************************/
