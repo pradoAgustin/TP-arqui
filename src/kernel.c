@@ -1,23 +1,18 @@
 #include "../include/kasm.h"
 #include "../include/defs.h"
 #include "../include/buffer.h"
-int segments[6];
 DESCR_INT idt[0xA];			/* IDT de 10 entradas*/
 IDTR idtr;				/* IDTR */
 int cursoraux;
 int tickpos=640;
 int prompt2;
-int registers[20];
 int flags[5];
 int i;
-typedef struct{
-        int r_shift;
-        int l_shift;
-        int r_control;
-		int l_control;
-		int Bloq_Mayus;
-			} specialKeys;
+
 specialKeys k;
+segments s;
+registers w;
+
 
 //initializeSpecialKeys();
 void initializeSpecialKeys(){
@@ -41,24 +36,23 @@ void int_09(char c){
 		flags[0]=flag<<2 & bit;
 		flags[1]=flag<<6 & bit;
 		flags[2]=flag<<9 & bit;
-
 		flags[3]=flag<<21 & bit;
 
-		segments[0] = read_segment_cs();
-		segments[1] = read_segment_ss();
-		segments[2] = read_segment_ds();
-		segments[3] = read_segment_es();
-		segments[4] = read_segment_fs();
-		segments[5] = read_segment_gs();
+		s.cs = read_segment_cs();
+		s.ss = read_segment_ss();
+		s.ds = read_segment_ds();
+		s.es = read_segment_es();
+		s.fs = read_segment_fs();
+		s.gs = read_segment_gs();
 
-		registers[0] = read_register_eax();
-		registers[1] = read_register_ebx();
-		registers[2] = read_register_ecx();
-		registers[3] = read_register_edx();
-		registers[4] = read_register_esp();
-		registers[5] = read_register_ebp();
-		registers[6] = read_register_esi();
-		registers[7] = read_register_edi();
+		w.eax = read_register_eax();
+		w.ebx = read_register_ebx();
+		w.ecx = read_register_ecx();
+		w.edx = read_register_edx();
+		w.esp = read_register_esp();
+		w.ebp = read_register_ebp();
+		w.esi = read_register_esi();
+		w.edi = read_register_edi();
 			
 		char d,a;
 

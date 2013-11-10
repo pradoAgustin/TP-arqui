@@ -51,11 +51,13 @@ int putc(char c, FILE * stdout){
 	update_cursor();
 	if(stdout==(FILE *)1 && c!=0){
 		__write(1,c,1);
-		
-	}else
-		return ;
-
+	}	
+	
 cursor+=i;
+if(cursor>(160*25)){
+	k_scroll();
+	cursor=77*2*25-8;
+}
 }
 
 /***************************************************************

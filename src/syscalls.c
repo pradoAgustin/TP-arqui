@@ -2,7 +2,7 @@
 #include "../include/buffer.h"
 #include "../include/kc.h"
 
-int registers[20];
+//int registers[20];
 
 //preguntas
 

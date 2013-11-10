@@ -97,6 +97,7 @@ _int_08_hand:               ; Handler de INT 8 ( Timer tick)
         iret
         
 _int_09_hand:               ; Handler de INT9 (Teclado)
+   
     pushad                  ; Buckupea todos los registros.
     pushf                    ; Backupea todos los flags.
     push cs

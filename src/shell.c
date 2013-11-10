@@ -160,16 +160,18 @@ void testdos(){
 	int i = 0;
 	int j = 0;
 	_cambiar_registros();
-	while (i<200)
-	{
-		while(j<1000)
-		{
-			j++;
-		}
-		int_09(25);
-		i++;
-	}
-	return;
+	// while (i<200)
+	// {
+	// 	while(j<1000)
+	// 	{
+	// 		j++;
+	// 	}
+	// 	int_09(25);
+	// 	i++;
+	// }
+	// return;
+
+
 }
 
 // void testtres(){
@@ -185,9 +187,8 @@ int clearup(){
 	k_clear_upper_screen();
 }
 int opencd(){
-_opencd();
-printf("ya esta\n");
-
+	_opencd();
+	printf("ya esta\n");
 }
 
 

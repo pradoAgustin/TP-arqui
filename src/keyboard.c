@@ -34,7 +34,7 @@ void enter(){
 	}else
 	cursor += 160 - cursor%160;
 	prompt();
-	cambiar_eax();
+	//cambiar_eax();
 }
  
 /***************************************************************

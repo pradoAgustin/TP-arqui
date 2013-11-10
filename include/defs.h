@@ -62,6 +62,34 @@ typedef struct {
   dword base;
 } IDTR;
 
+
+typedef struct{
+	int eax;
+	int ebx;
+	int ecx;
+	int edx;
+	int edi;
+	int esi;
+	int esp;
+	int ebp;
+} registers;
+
+typedef struct{
+        int r_shift;
+        int l_shift;
+        int r_control;
+		int l_control;
+		int Bloq_Mayus;
+			} specialKeys;
+			
+typedef struct{
+	int cs;
+	int ss;
+	int es;
+	int ds;
+	int fs;
+	int gs;
+}segments;
      
 
 #endif

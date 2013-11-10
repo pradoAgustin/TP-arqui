@@ -1,10 +1,10 @@
 #include "../include/kernel.h"
 #include "../include/buffer.h"
 buffer buf;
-#define MAX_BUFFER 256
+#define MAX_BUFFER 1024
 int initializeBuffer(){
-	char vec[MAX_BUFFER];
-	buf.vec=vec;
+	char vec[MAX_BUFFER]={0};
+	buf.vec = vec;
 	buf.read=0;
 	buf.write=0;
 	
@@ -22,7 +22,7 @@ return;
 char getBuffer(){
 	char c;
 	if(buf.read>MAX_BUFFER){
-	buf.read=0;
+		buf.read=0;
 	}
 	if(buf.read==buf.write){
 		return 0;
@@ -32,4 +32,6 @@ char getBuffer(){
 		buf.read++;
 		return c;
 }
-void vacia_buffer(){buf.read=buf.write;}
+void vacia_buffer(){
+	buf.read = buf.write;
+}
