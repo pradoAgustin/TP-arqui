@@ -504,73 +504,11 @@ ret
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 _infocd:
 
- call _pollUntilNotBusy
-    xor ax, ax
-    mov dx, 0x1f6
-    out dx, ax ;Select master device
-    
-    mov ecx, 0xffff
-waitloop3:
-    loopnz waitloop3
-    
-    mov dx, 0x1f1
-    out dx, ax ;Set Features register to 0
-    mov dx, 0x1f4
-    mov ax, 0x08
-    out dx, ax ;Set LBA1 register to 0x0008
-    mov dx, 0x1f5
-    out dx, ax ;Set LBA2 register to 0x0008
-    mov dx, 0x1f7
-    mov al, 0xa0
-    out dx, al ;Send packet command
-    call _pollUntilNotBusy
-   ; call _pollDRQ
-    mov dx, 0x1f0
-    mov al, 0x25 ;Read capacity command
-    out dx, al
-    xor ax, ax
-    out dx, al
-    out dx, ax
-    out dx, ax
-    out dx, ax
-    out dx, ax
-    out dx, ax
-    call _pollUntilNotBusy
-    ;call _pollDRQ
-    mov ecx, 4
-    xor ebx, ebx
-getCapacityInfo:
-    in ax, dx
-    mov [array+ebx], ax
-    add ebx, 2
-    loopnz getCapacityInfo
-
-    mov eax, [array]
-    mov ebx, [array+4]
-    push ebx
-    push eax
-    call printCapacity
-    add esp, 8
-    ;call _pollUntilNotBusy
-    ret
-
-_pollUntilNotBusy:
-    mov dx, 0x1f7
-cycleBSY:
-    in al, dx ;Read from status register
-    and al, 0x80 ;Check leftmost bit to see if drive is busy
-    jnz cycleBSY ;While busy, keep querying until drive is available
-    ret
-
-_pollUntilDataRequest:
-    mov dx, 0x1f7
-cycleDRQ:
-    in al, dx ;Read from status register
-    and al, 0x08 ;Check 3rd bit (Data transfer Requested flag)
-    jz cycleDRQ ;While there are data transfer requests, keep cycling
-    ret
 
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;A medium is any media inserted in the ATAPI Drive, like a CD or a DVD. By using the 'SCSI Read Capacity' command, ;you can read the last LBA of the medium, then you calculate the medium's capacity using this relationship:
 
 ;Capacity = (Last LBA + 1) * Block Size;

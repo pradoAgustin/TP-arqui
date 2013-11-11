@@ -7,13 +7,12 @@ extern _cambiar_registros();
 extern _iniciar_contador();
 extern _contar_caracteres();
 extern _closecd();
-void clear_down();
 
 void shell(){
 char s[20];
 char lista[20][20];
 int i=0;
-char c;
+int c;
 	while( ((c=getchar()) != '\n')){
 		if(c!=0){
 			if(c == '\b' && i >= 1){
@@ -47,7 +46,7 @@ void parsecommand(char * s)
 			printf("Cerrando cd :)\n");
 			closecd();
 		}
-		if(!strcmp(s,"test1")){
+		if(!strcmp(s,"testuno")){
 			testuno();
 		}
 		if(!strcmp(s,"infocd")){
@@ -60,7 +59,7 @@ void parsecommand(char * s)
 		if(!strcmp(s,"troll")){
 			troll();
 		}
-		if(!strcmp(s,"test2"))
+		if(!strcmp(s,"testdos"))
 		{
 			testdos();
 		}
@@ -70,7 +69,7 @@ void parsecommand(char * s)
 		if(!strcmp(s,"testscanf")){
 		testscanf();
 		}
-		if(!strcmp(s,"clear2")){
+		if(!strcmp(s,"cleardown")){
 		clear_down();
 		}
 return;
@@ -112,8 +111,8 @@ printf("      |      /____/\\____\\\n");
 printf("\n");
 
 {int i=0;
-while(i<50000000){i++;}}
-initialize_screen();
+ while(i<90000000){i++;}}
+ initialize_screen();
  }
 
 void testuno(){

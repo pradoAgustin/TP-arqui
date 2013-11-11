@@ -31,7 +31,7 @@ size_t __write(int fd, char buffer, size_t count){
 *
 **/
 size_t __read(int fd, char buffer, size_t count){
-char c=getBuffer();
+int c=getBuffer();
 if(c == 0)
 	return 0;
 return c;

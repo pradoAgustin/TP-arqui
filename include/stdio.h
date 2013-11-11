@@ -7,5 +7,5 @@ int getc(FILE * stream);
 int putc(char c, FILE * stream);
 int scanf(const char * format,...);
 int printf( char * format, ...);
-char getchar();
+int getchar();
 
