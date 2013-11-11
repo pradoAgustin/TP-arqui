@@ -143,6 +143,7 @@ kmain()
 {
 cursor = 0;
 prompt2 = 1;
+_initialize_cursor();
 initializeSpecialKeys();
 /* Borra la pantalla. */ 
 

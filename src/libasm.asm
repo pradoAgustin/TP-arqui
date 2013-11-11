@@ -9,6 +9,8 @@ GLOBAL read_segment_fs, read_segment_gs, read_segment_ds, read_segment_es, read_
 GLOBAL _delay
 GLOBAL _iniciar_contador
 GLOBAL _contar_caracteres
+GLOBAL _initialize_cursor
+GLOBAL _cuenta_super_complicada
 EXTERN  int_08, int_09, int_80
 EXTERN printStatus
 GLOBAL  _printError
@@ -130,6 +132,19 @@ outportb:
     pop ebp
     ret
 
+_update_cursor:
+    add ebx,1
+    cmp ebx,1000
+    je reset
+    ret
+reset:
+    mov ebx,0
+    ret
+
+_initialize_cursor:
+    mov ebx,0
+    ret
+
 _store_registers:
     mov edx,0
     mov ebx,esp
@@ -234,9 +249,14 @@ read_register_eax:
     ret
 _iniciar_contador:
     xor ecx,ecx
-
+    ret
 _contar_caracteres:
     add ecx,1
+    ret
+_cuenta_super_complicada:
+    add ecx,3
+    mov eax,ecx
+    ret
 
 _delay:
     mov eax, 0
