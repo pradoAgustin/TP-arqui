@@ -18,22 +18,6 @@ typedef short int ssize_t;
 typedef enum eINT_80 {WRITE=0, READ} tINT_80;
 typedef enum eUSER {U_KERNEL=0, U_NORMAL} tUSERS;
 
-DESCR_INT idt[0xA];			/* IDT de 10 entradas*/
-IDTR idtr;				/* IDTR */
-int cursoraux;
-int tickpos=640;
-int prompt2;
-int registers[20];
-int flags[5];
-int i;
-typedef struct{
-        int r_shift;
-        int l_shift;
-        int r_control;
-		int l_control;
-		int Bloq_Mayus;
-			} specialKeys;
-specialKeys k;
 
 void int_09();
 

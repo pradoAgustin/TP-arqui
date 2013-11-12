@@ -4,7 +4,8 @@
 DESCR_INT idt[0xA];			/* IDT de 10 entradas*/
 IDTR idtr;				/* IDTR */
 int tickpos=640;
-//extern _int_80_hand
+#define WRITE 0
+#define READ 1
 
 void initializeSpecialKeys(){
 	k.r_control=0;
@@ -13,8 +14,7 @@ void initializeSpecialKeys(){
 	k.l_control=0;
 	
 }
-#define WRITE 0
-#define READ 1
+
 
 void int_80(unsigned int sysCall, unsigned int arg1, int arg2, int arg3, int arg4, int arg5){
    if(sysCall==WRITE)
@@ -24,7 +24,6 @@ void int_80(unsigned int sysCall, unsigned int arg1, int arg2, int arg3, int arg
             __read((int)arg1, (void *)arg2,(int)arg3);
     
 }
-
 
 
 void int_08() {
@@ -112,22 +111,21 @@ void int_09(char c){
 		else if(c & 0x80)
 				return;
 		else if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.r_control == 1 || k.l_control==1) && c==(char)0x13){
-			//UBICA CURSOR DONDE DEBE REGISTERS BLA
-			//clean upper screen
+			
 			k_clear_upper_screen();
 			print_registers();
 			return;
 		}
-		else if((k.r_shift==1 || k.l_shift==1) || k.Bloq_Mayus){//ojo aca! no printefear, guardar en buffer
+		else if((k.r_shift==1 || k.l_shift==1) || k.Bloq_Mayus){
 			d=scanCodeToASCIIshifted(c);
-//printf("%c%c",d);
+
 			 if(d-64<0 && d!=10 && d!=32 && d!=8&& d!=15)
-			 	return;//64	d-47<0 
+			 	return; 
 			storeInBuffer(d);	
 			
 		}
 		else if((d=scanCodeToASCII(c))-80<0 && d!=10 && d!=32 && d!=8 && d!=15)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
-			return;//80
+			return;
 		
 		else
 		{
@@ -176,8 +174,11 @@ initializeSpecialKeys();
         _mascaraPIC2(0xFF);
         
 	_Sti();
-showSplashScreen();
-initialize_screen();
+	
+	showSplashScreen();
+	
+	initialize_screen();
+    
         while(1)
         {
 		shell();

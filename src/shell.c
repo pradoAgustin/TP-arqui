@@ -7,6 +7,7 @@ extern _delay();
 extern _iniciar_contador();
 extern _contar_caracteres();
 extern _closecd();
+extern _infoCD();
 extern _cuenta_super_complicada();
 void testscanf(void);
 
@@ -58,9 +59,6 @@ void parsecommand(char * s)
 		if(!strcmp(s,"clearup")){
 			clearup();
 		}
-		if(!strcmp(s,"troll")){
-			troll();
-		}
 		if(!strcmp(s,"testdos"))
 		{
 			testdos();
@@ -89,38 +87,8 @@ printf("infoCD \t Informacion sobre el cd en la disquetera\n");
 printf("test1\t Demostrar el funcionamiento de scanf, printf,\n");
 printf("test2\t Test sobre los registros\n");
 printf("test3\t Mas tests sobre los registros\n");
-printf("troll  \t Comando sorpresa \n");
-}
-int troll(){
-	cursor=0;
-	k_clear_screen();
-printf("                  {}\n");
-printf("  ,   A           {}\n");
-printf(" / \\, | ,        .--.\n");
-printf("|  =|= >        /.--.\\\n");
-printf(" \\ /` | `       |====|\n");
-printf("  `   |         |`::`|\n");
-printf("      |     .-;`\\..../`;_.-^-._\n");
-printf("     /\\\\/  /  |...::..|`   :   `|\n");
-printf("     |:'\\ |   /'''::''|   .:.   |\n");
-printf("      \\ /\\;-,/\\   ::  |..ARQUI..|\n");
-printf("      |\\ <` >  >._::_.| ':ART:' |\n");
-printf("      | `""`_/   ^^/>/>  |   ':'   |\n");
-printf("      |       |       \\    :   /\n");
-printf("      |       |        \\   :   /\n");
-printf("      |       |___/\\___|`-.:.-`\n");
-printf("      |        \\_ || _/    `\n");
-printf("      |        <_ >< _>\n");
-printf("      |        |  ||  |\n");
-printf("      |        |  ||  |\n");
-printf("      |       _\\.:||:./_\n");
-printf("      |      /____/\\____\\\n");
-printf("\n");
 
-{int i=0;
- while(i<90000000){i++;}}
- initialize_screen();
- }
+}
 
 void testuno(){
 printf("Bienvenido a nuestro sistema operativo para wachiturros\n");
@@ -196,7 +164,7 @@ int closecd(){
 
 
 int infocd(){
-	_infocd();
+	_infoCD();
 }
 
 int printStatus(int num){
@@ -255,8 +223,11 @@ int printNum(int num){
 	printf("%d",num);
 }
 
-void printCapacity(unsigned int lba){
-    printf("Capacity = %d", (lba+1)*2000);
+void printCapacity(unsigned int lba, unsigned int sector){
+   printf("%d\n",lba );
+   printf("%d\n", sector );
+
+    printf("Capacity = %d", (lba+1)*sector);
 }
 
 void printReady()

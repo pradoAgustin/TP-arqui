@@ -15,13 +15,17 @@ EXTERN  int_08, int_09, int_80
 EXTERN printStatus
 GLOBAL  _printError
 EXTERN printNum
-GLOBAL  _opencd, _closecd, _infocd
+GLOBAL  _opencd, _closecd, _infoCD
 EXTERN printCapacity
 EXTERN printReady
 EXTERN printRegister
+EXTERN printbusy
 
 SECTION .bss
     registers resb 70
+    buffer resb 8
+    array resb 8
+
 
 SECTION .text
 
@@ -86,7 +90,6 @@ _int_08_hand:               ; Handler de INT 8 ( Timer tick)
 _int_09_hand:               ; Handler de INT9 (Teclado)
    
     pushad                  ; Buckupea todos los registros.
-    pushf                    ; Backupea todos los flags.
     push cs
     push ss
     push ds
@@ -103,7 +106,6 @@ _int_09_hand:               ; Handler de INT9 (Teclado)
     add esp,24
     mov al,20h              ; Le mando el EOI generico al PIC.
     out 20h,al
-    popf                    ; Restauro todos los flags.
     popad                   ; Restauro todos los registros.
     iretd
 
@@ -163,7 +165,7 @@ read_segment_cs:
     push ebp
     mov ebp, esp
 
-    mov eax, [registers+20];[esp+32]
+    mov eax, [registers+20]
 
     mov esp, ebp
     pop ebp
@@ -173,7 +175,7 @@ read_segment_ss:
     push ebp
     mov ebp, esp
 
-    mov eax, [registers+16];[esp+28]
+    mov eax, [registers+16]
 
     mov esp, ebp
     pop ebp
@@ -181,73 +183,66 @@ read_segment_ss:
 
 read_segment_ds:
 
-    mov eax, [registers+12];[esp+24]
+    mov eax, [registers+12]
     ret
 
 read_segment_es:
 
-    mov eax, [registers+8];[esp+20]
+    mov eax, [registers+8]
     ret
 
 read_segment_fs:
 
-    mov eax, [registers+4];[esp+16]
+    mov eax, [registers+4]
     ret
 
 read_segment_gs:
-    mov eax, [registers];[esp+12]
-    ret
-
-
-
-read_flags:
-
-    mov eax, [registers+24];[esp+36]
+    mov eax, [registers]
     ret
 
 read_register_edi:
     
-    mov eax, [registers+28];[esp+40]
+    mov eax, [registers+24]
     ret
 
+read_flags:
+    
+    mov eax, [registers+64]
+    ret
+ 
 read_register_esi:
    
-    mov eax, [registers+32];[esp+44]
+    mov eax, [registers+28]
     ret
 
 read_register_ebp:
 
-    mov eax, [registers+36];[esp+48]
+    mov eax, [registers+32]
     ret
 
 read_register_esp:
  
-    mov eax, [registers+40];[esp+52]
+    mov eax, [registers+36]
     ret
 
 read_register_ebx:
-    push ebp
-    mov ebp, esp
 
-    mov eax, [registers+44];[esp+56]
-
-    mov esp, ebp
-    pop ebp
+    mov eax, [registers+40]
     ret
 
 read_register_edx:
  
-    mov eax, [registers+48];[esp+60]
+    mov eax, [registers+44]
     ret
 
 read_register_ecx:
    
-    mov eax, [registers+52];[esp+64]
+    mov eax, [registers+48]
     ret
 
 read_register_eax:
    
-    mov eax, [registers+54]
+    mov eax, [registers+52]
     ret
 _iniciar_contador:
     xor ecx,ecx
@@ -321,12 +316,12 @@ _opencd:
     mov al, 0
     out dx, al 
 
-MOV DX, 3F6h ;Device Control register
-MOV AL, 00001010b ;nIEN is the second bit from the right here
-OUT DX, AL ;nIEN is now one!
+    MOV DX, 3F6h
+    MOV AL, 00001010b
+    OUT DX, AL
 
     mov dx, 0x1f7
-    mov al, 0xA0 ;ATAPI COMMAND
+    mov al, 0xA0
     out dx, al 
 
     call isBSY
@@ -352,7 +347,6 @@ OUT DX, AL ;nIEN is now one!
     out dx, ax
 
     call isBSY
-    call isDRDY
 
     mov dx, 0x1f7
     mov al, 0xA0
@@ -383,35 +377,20 @@ OUT DX, AL ;nIEN is now one!
     call isBSY
     ret
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;pollbsy es fijarse si busy no esta en 1
-;;isDRQ es fijarse que drq este en 1
-;;0x1E  y todo cero es para habilitar la lectora
-;;para cerrar la lectora no hace falta 0x1E
-;; solo hace falta 0x1B
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 isBSY:
-MOV DX, 1F7h 
+    MOV DX, 1F7h 
 LOOP1:
-IN AL, DX 
-AND AL, 0x80
-JNE LOOP1
-ret
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-isDRDY:
-ret
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    IN AL, DX 
+    AND AL, 0x80
+    jne LOOP1
+    ret
 isDRQ:
-MOV DX, 1F7h 
+    MOV DX, 1F7h 
 LOOP4:
-IN AL, DX
-AND AL,0x08 
-JE LOOP4
-ret
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+    IN AL, DX
+    AND AL,0x08 
+    JE LOOP4
+    ret
 
 _printError:
 mov dx, 0x1f1
@@ -422,222 +401,115 @@ call printNum
 pop eax
 ret
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 _closecd:
 
-call isBSY
+ call isBSY
 
-mov ax, 00h 
-mov dx, 0x1F6 
-out dx, ax ; al puerto 1f6 mando un cero
+    mov dx, 0x1f6
+    mov al, 10h
+    out dx, al 
 
-mov dx, 0x1F1
-mov ax, 0 
-out dx, ax ; al puerto 1f1 mando un cero
+    mov dx, 0x1f7
+    mov al, 0xA0 ;ATAPI COMMAND
+    out dx, al 
 
-;call _pollDRDY
+    call isBSY
+    call isDRQ
 
-mov dx, 0x1F7 
-mov ax, 0xA0 
-out dx, ax ; al puerto 1f7 mando el A0
+    mov dx, 0x1f0
+    mov ax, 1Bh
+    out dx, ax
 
-; puede pasar q tarde un cacho 
+    mov ax, 0
+    out dx, ax
 
-mov ebx, 65000
-loop97: 
-dec ebx
-cmp ebx, 0
-jne loop97
+    mov ax, 3
+    out dx, ax
 
-call isBSY 
-call isDRQ
+    mov ax, 0
+    out dx, ax
 
-;mov dx, 0x1F0 
+    mov ax, 0
+    out dx, ax
 
-;mov al, 0x1E 
-;out dx, al
-;mov al,0
-;out dx, al
-;out dx, al
-;out dx, al
-;out dx, al
-;out dx, al
-;out dx, al
-;out dx, al
-;out dx, al
-;out dx, al
-;out dx, al
-;out dx, al
+    mov ax, 0
+    out dx, ax
 
-;call isBSY 
-;call _pollDRDY
+    call isBSY
+    ret
 
-mov dx, 0x1F7 
+_infoCD:
 
-mov ax, 0xA0 
-out dx, ax
+    call isBSY
 
-call isBSY 
-call isDRQ
+    mov dx, 0x1f6
+    mov al, 10h
+    out dx, al 
 
-mov dx, 0x1f0
-mov al, 1Bh 
-out dx, al
+    mov dx, 0x1F4
+    mov al, 0x08
+    out dx, al
 
-mov al, 0 
-out dx, al
-out dx, al
-out dx, al
+    mov dx, 0x1F5
+    mov al, 0x08
+    out dx, al
 
-mov al, 3 
-out dx, al
+    mov dx, 0x1f7
+    mov al, 0xA0 ;ATAPI COMMAND
+    out dx, al 
 
-mov al, 0 
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
+    call isBSY
+    call isDRQ
 
-mov eax, 0
-mov dx, 0x1f7
-in eax, dx
-push eax
-call printStatus
-pop eax
-call isBSY
-ret
+    mov dx, 0x1f0
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-_infocd:
+    mov ax, 0x25
+    out dx, ax
 
-call isBSY
-xor eax,eax
-xor ebx,ebx
-xor ecx,ecx
-xor edx,edx
+    mov ax, 0
+    out dx, ax
 
-mov ax, 00h 
-mov dx, 0x1F6 
-out dx, ax ; al puerto 1f6 mando un cero
+    mov ax, 0
+    out dx, ax
 
-mov dx, 0x1F1
-mov ax, 0 
-out dx, ax ; al puerto 1f1 mando un cero
+    mov ax, 0
+    out dx, ax
 
-;call _pollDRDY
-mov dx, 0x1F7 
-mov ax, 0xA0 
-out dx, ax ; al puerto 1f7 mando el A0
+    mov ax, 0
+    out dx, ax
 
-; puede pasar q tarde un cacho 
-mov ebx, 65000
-loop982: 
-dec ebx
-cmp ebx, 0
-jne loop982
+    mov ax, 0
+    out dx, ax
 
-call isBSY 
-call isDRQ
+    call isBSY
+    call printbusy
+    ;call isDRQ                                  
+    
+    mov dx, 1f0h
 
-mov dx, 0x1F0 
-mov al, 0xA8
-out dx, al
+    mov ebx, 0
+    in ax, dx
+    mov [buffer + ebx], ax
+    
+    add ebx, 2
+    in ax, dx
+    mov [buffer + ebx], ax
 
-mov al, 0 
-out dx, al
+    add ebx, 2
+    in ax, dx
+    mov [buffer + ebx], ax
 
-mov al, 0 
-out dx, al
+    add ebx, 2
+    in ax, dx
+    mov [buffer + ebx], ax
 
-mov al, 0 
-out dx, al
+    mov eax, [buffer]
+    mov ebx, [buffer + 4]
+    add eax,ebx
+    push ebx
+    push eax
+    call printCapacity
+    add esp,8
 
-mov al, 0 
-out dx, al
+    ret
 
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-mov al, 0 
-out dx, al
-
-call isBSY 
-;call _pollDRDY
-
-mov dx, 0x1F7 
-mov ax, 0xA0 
-out dx, ax
-
-call isBSY 
-call isDRQ
-
-mov dx, 0x1f0
-mov al, 0x25
-out dx, al
-mov al, 0 
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx,al
-
-mov eax, 0
-mov dx, 0x1f7
-in eax, dx
-push eax
-call printCapacity
-pop eax
-
-call isBSY
-ret
-
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;A medium is any media inserted in the ATAPI Drive, like a CD or a DVD. By using the 'SCSI Read Capacity' command, ;you can read the last LBA of the medium, then you calculate the medium's capacity using this relationship:
-
-;Capacity = (Last LBA + 1) * Block Size;
-
-;Last LBA and Block Size are returned after processing the command. Almost all CDs and DVDs use blocks with size of ;2KB each.
-
-;Processing this command goes in the following algorithm:
-
-   ; Selecting the Drive [Master/Slave].
-   ; Waiting 400ns for select to complete.
-   ; Setting FEATURES Register to 0 [PIO Mode].
-   ; Setting LBA1 and LBA2 Registers to 0x0008 [Number of Bytes will be returned].
-   ; Sending Packet Command, then Polling.
-   ; Sending the ATAPI Packet, then polling.
-   ; If there isn't an error, reading 4 Words [8 bytes] from the DATA Register. 
-
-
-section .bss
-    array resb 8
