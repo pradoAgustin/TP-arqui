@@ -9,6 +9,7 @@ extern _contar_caracteres();
 extern _closecd();
 extern _cuenta_super_complicada();
 void testscanf(void);
+
 void shell(){
 char s[20];
 char lista[20][20];
@@ -185,6 +186,7 @@ int clearup(){
 
 int opencd(){
 	_opencd();
+	//_opencd_puerto2();
 	printf("ya esta\n");
 }
 
@@ -253,8 +255,8 @@ int printNum(int num){
 	printf("%d",num);
 }
 
-void printCapacity(unsigned int lba, unsigned int blockLength){
-    printf("Capacity = %d", (lba+1)*blockLength);
+void printCapacity(unsigned int lba){
+    printf("Capacity = %d", (lba+1)*2000);
 }
 
 void printReady()

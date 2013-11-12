@@ -12,7 +12,7 @@
 *
 **/
 
-size_t __write(int fd, char buffer, size_t count){
+int __write(int fd, char buffer, int count){
 	int i =0;
 	((char *)(POSITION+cursor))[i]=(char)buffer;
 	i++;
@@ -30,7 +30,7 @@ size_t __write(int fd, char buffer, size_t count){
 * - Cantidad
 *
 **/
-size_t __read(int fd, char buffer, size_t count){
+int __read(int fd, char buffer, int count){
 int c=getBuffer();
 if(c == 0)
 	return 0;
