@@ -11,8 +11,9 @@ extern _cuenta_super_complicada();
 void testscanf(void);
 void shell(){
 char s[20];
+char lista[20][20];
 int i=0;
-char c;
+int c;
 	while( ((c=getchar()) != '\n')){
 		if(c!=0){
 			if(c == '\b' && i >= 1){
@@ -30,6 +31,7 @@ char c;
 	putc(c,1);
 	s[i]='\0';
 	parsecommand(s);
+
 }
 
 void parsecommand(char * s)
@@ -45,7 +47,7 @@ void parsecommand(char * s)
 			printf("Cerrando cd :)\n");
 			closecd();
 		}
-		if(!strcmp(s,"test1")){
+		if(!strcmp(s,"testuno")){
 			testuno();
 		}
 		if(!strcmp(s,"infocd")){
@@ -58,11 +60,11 @@ void parsecommand(char * s)
 		if(!strcmp(s,"troll")){
 			troll();
 		}
-		if(!strcmp(s,"test2"))
+		if(!strcmp(s,"testdos"))
 		{
 			testdos();
 		}
-		if(!strcmp(s,"test3"))
+		if(!strcmp(s,"testtres"))
 		{
 			testtres();
 		}
@@ -71,6 +73,9 @@ void parsecommand(char * s)
 		}
 		if(!strcmp(s,"testscanf")){
 		testscanf();
+		}
+		if(!strcmp(s,"cleardown")){
+		clear_down();
 		}
 return;
 }	
@@ -88,7 +93,7 @@ printf("troll  \t Comando sorpresa \n");
 int troll(){
 	cursor=0;
 	k_clear_screen();
- printf("                  {}\n");
+printf("                  {}\n");
 printf("  ,   A           {}\n");
 printf(" / \\, | ,        .--.\n");
 printf("|  =|= >        /.--.\\\n");
@@ -97,7 +102,7 @@ printf("  `   |         |`::`|\n");
 printf("      |     .-;`\\..../`;_.-^-._\n");
 printf("     /\\\\/  /  |...::..|`   :   `|\n");
 printf("     |:'\\ |   /'''::''|   .:.   |\n");
-printf("      \\ /\\;-,/\\   ::  |..ASCII..|\n");
+printf("      \\ /\\;-,/\\   ::  |..ARQUI..|\n");
 printf("      |\\ <` >  >._::_.| ':ART:' |\n");
 printf("      | `""`_/   ^^/>/>  |   ':'   |\n");
 printf("      |       |       \\    :   /\n");
@@ -108,14 +113,22 @@ printf("      |        <_ >< _>\n");
 printf("      |        |  ||  |\n");
 printf("      |        |  ||  |\n");
 printf("      |       _\\.:||:./_\n");
-printf("      | jgs  /____/\\____\\\n");
+printf("      |      /____/\\____\\\n");
 printf("\n");
+
+{int i=0;
+ while(i<90000000){i++;}}
+ initialize_screen();
  }
+
 void testuno(){
 printf("Bienvenido a nuestro sistema operativo para wachiturros\n");
 printf("Ingrese su nombre o tirese un paso \n");
+
 testscanf();
+
 man();
+
 return;
 }
 
@@ -154,8 +167,10 @@ char d[20];
 
 	scanf("%s",d);
 	printf("\nBienvenido wachiturro %s\n\n",d);
-
-
+}
+void clear_down(void){
+k_clear_screen2();
+initialize_screen();
 }
 
 
@@ -240,4 +255,16 @@ int printNum(int num){
 
 void printCapacity(unsigned int lba, unsigned int blockLength){
     printf("Capacity = %d", (lba+1)*blockLength);
+}
+
+void printReady()
+{
+	printf("%s\n", "disk ready" );
+	return;
+}
+
+void printbusy()
+{
+	printf("%s\n", "disk busy" );
+	return;
 }

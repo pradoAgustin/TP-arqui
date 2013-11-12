@@ -1,8 +1,7 @@
 #include "../include/kernel.h"
 #include "../include/buffer.h"
 
-
-void storeInBuffer(char c){
+void storeInBuffer(int c){
 	if(buf.write==MAX_BUFFER){
 		buf.write=0;
 }
@@ -11,13 +10,20 @@ void storeInBuffer(char c){
 	
 return;
 }
+void initializeBuffer(){
+buf.read=0;
+buf.write=0;
+}
 
-char getBuffer(){
-	char c;
+
+int getBuffer(){
+	int c;
 	if(buf.read>MAX_BUFFER){
 		buf.read=0;
 	}
 	if(buf.read==buf.write){
+		buf.read=0;
+		buf.write=0;
 		return 0;
 
 	}

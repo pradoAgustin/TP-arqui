@@ -1,6 +1,6 @@
-int initializeBuffer();
+
 void storeInBuffer(char c);
-char getBuffer();
+int getBuffer();
 
 typedef struct{
         char * vec;
@@ -8,5 +8,4 @@ typedef struct{
         int write;
 			}buffer;
 buffer buf;
-#define MAX_BUFFER 256
-#define MAX_BUFFER 256
+#define MAX_BUFFER 1024

@@ -13,7 +13,7 @@ int printf( char * fmt, ...);
 wiki.osdev.org/Inline_Assembly
 ****************************************************************/
 
-char getchar(){
+int getchar(){
 	return __read(1,1,1);
 }
 

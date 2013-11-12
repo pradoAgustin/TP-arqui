@@ -1,6 +1,6 @@
-int initializeBuffer();
-void storeInBuffer(char c);
-char getBuffer();
+
+void storeInBuffer(int c);
+int getBuffer();
 
 typedef struct{
         char * vec;

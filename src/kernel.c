@@ -60,9 +60,10 @@ void int_09(char c){
 			
 		char d,a;
 
+
 		if(c-80>0 )
 			return;
-
+	
 			//codigo divino para ctrl R y mayusculas
 		else if(c==(char)0x36 && (k.r_shift) == 0 ){//00110110
 			k.r_shift=1; //right shift down code
@@ -100,15 +101,16 @@ void int_09(char c){
 			k.r_control=0; // right control up code
 			return;
 			}
-		else if(c==(char)0x3A ){//111010
+		else if(c==(char)0x3A && k.Bloq_Mayus==0){//111010
 			k.Bloq_Mayus=1;
 			return;
 			}
-		else if(c==(char)0xBA ){//10111010
+		else if(c==(char)0x3A && k.Bloq_Mayus ==1){//0xba//10111010
 			k.Bloq_Mayus=0;
 			return;
 			}
-
+		else if(c & 0x80)
+				return;
 		else if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.r_control == 1 || k.l_control==1) && c==(char)0x13){
 			//UBICA CURSOR DONDE DEBE REGISTERS BLA
 			//clean upper screen
@@ -118,13 +120,13 @@ void int_09(char c){
 		}
 		else if((k.r_shift==1 || k.l_shift==1) || k.Bloq_Mayus){//ojo aca! no printefear, guardar en buffer
 			d=scanCodeToASCIIshifted(c);
-
-			 if(d<0 && d!=10 && d!=32 && d!=8&& d!=15)
+//printf("%c%c",d);
+			 if(d-64<0 && d!=10 && d!=32 && d!=8&& d!=15)
 			 	return;//64	d-47<0 
 			storeInBuffer(d);	
 			
 		}
-		else if((d=scanCodeToASCII(c))<0 && d!=10 && d!=32 && d!=8 && d!=15)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
+		else if((d=scanCodeToASCII(c))-80<0 && d!=10 && d!=32 && d!=8 && d!=15)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
 			return;//80
 		
 		else
@@ -140,10 +142,13 @@ Punto de entrada de cóo C.
 *************************************************/
 
 kmain() 
-{
+{int c;
 cursor = 0;
 prompt2 = 1;
 _initialize_cursor();
+
+
+initializeBuffer();
 initializeSpecialKeys();
 /* Borra la pantalla. */ 
 
@@ -171,7 +176,7 @@ initializeSpecialKeys();
         _mascaraPIC2(0xFF);
         
 	_Sti();
-
+showSplashScreen();
 initialize_screen();
         while(1)
         {

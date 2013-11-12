@@ -67,6 +67,7 @@ print_registers(){
 
 
 void initialize_screen(){
+	k_clear_screen();
 cursor=160*9;
 printf("________________________________________________________________________________");
 cursor=160*10;
