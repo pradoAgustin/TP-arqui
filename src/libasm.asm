@@ -18,6 +18,7 @@ EXTERN printNum
 GLOBAL  _opencd, _closecd, _infocd
 EXTERN printCapacity
 EXTERN printReady
+EXTERN printRegister
 
 SECTION .bss
     registers resb 70
@@ -310,122 +311,100 @@ vuelve: mov     ax, 1
 
 _opencd:
 
-mov dx, 177h 
-loop1:
-in al, dx 
-and al, 0x80
-jne loop1
+     call isBSY
 
-mov ax, 00h 
-mov dx, 0x176 
-out dx, ax ; al puerto 1f6 mando un cero
+    mov dx, 0x1f6
+    mov al, 10h
+    out dx, al 
 
-mov dx, 0x376
-mov ax, 0ah
-out dx, ax ; al puerto 1f1 mando un cero
+    mov dx, 0x1f1
+    mov al, 0
+    out dx, al 
 
-mov dx, 177h
-loop2:
-in al, dx 
-and al, 40h
-JE loop2
+MOV DX, 3F6h ;Device Control register
+MOV AL, 00001010b ;nIEN is the second bit from the right here
+OUT DX, AL ;nIEN is now one!
 
-call printReady
+    mov dx, 0x1f7
+    mov al, 0xA0 ;ATAPI COMMAND
+    out dx, al 
 
-mov dx, 0x177 
-mov ax, 0xA0 
-out dx, ax ; al puerto 177 mando el A0
+    call isBSY
+    call isDRQ
 
-; puede pasar q tarde un cacho 
+    mov dx, 0x1f0
+    mov ax, 0x1E
+    out dx, ax
 
-mov ebx, 65000
-loop9: 
-dec ebx
-cmp ebx, 0
-jne loop9
+    mov ax, 0
+    out dx, ax
 
-call _pollBSY 
-call _pollDRQ
+    mov ax, 0
+    out dx, ax
 
-mov dx, 0x170 
-mov al, 0x1E 
-out dx, al
+    mov ax, 0
+    out dx, ax
 
-mov al, 0 
-out dx, al 
-out dx, al
-out dx, al 
-out dx, al
-out dx, al
-out dx, al 
-out dx, al 
-out dx, al 
-out dx, al
-out dx, al
-out dx, al
+    mov ax, 0
+    out dx, ax
 
-call _pollBSY 
-call _pollDRDY
+    mov ax, 0
+    out dx, ax
 
-mov dx, 0x177 
-mov ax, 0xA0 
-out dx, ax
+    call isBSY
+    call isDRDY
 
-call _pollBSY 
-call _pollDRQ
+    mov dx, 0x1f7
+    mov al, 0xA0
+    out dx, al
 
-mov dx, 0x170
-mov al, 1Bh 
-out dx, al
+    call isBSY
+    call isDRQ
 
-mov al, 0 
-out dx, al
-out dx, al
-out dx, al
+    mov dx, 0x1f0
+    mov ax, 1Bh
+    out dx, ax
 
-mov al, 2 
-out dx, al
+    mov ax, 0
+    out dx, ax
 
-mov al, 0 
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
-out dx, al
+    mov ax, 2
+    out dx, ax
 
-;mov eax, 0
-;mov dx, 0x177
-;in eax, dx
-;push eax
-;call printStatus
-;pop eax
+    mov ax, 0
+    out dx, ax
 
-call _pollBSY
-ret
+    mov ax, 0
+    out dx, ax
+
+    mov ax, 0
+    out dx, ax
+
+    call isBSY
+    ret
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;pollbsy es fijarse si busy no esta en 1
-;;polldrq es fijarse que drq este en 1
+;;isDRQ es fijarse que drq este en 1
 ;;0x1E  y todo cero es para habilitar la lectora
 ;;para cerrar la lectora no hace falta 0x1E
 ;; solo hace falta 0x1B
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-_pollBSY:
-MOV DX, 177h 
+isBSY:
+MOV DX, 1F7h 
 LOOP1:
 IN AL, DX 
 AND AL, 0x80
 JNE LOOP1
 ret
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-_pollDRDY:
+isDRDY:
 ret
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-_pollDRQ:
-MOV DX, 177h 
+isDRQ:
+MOV DX, 1F7h 
 LOOP4:
 IN AL, DX
 AND AL,0x08 
@@ -446,7 +425,7 @@ ret
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 _closecd:
 
-call _pollBSY
+call isBSY
 
 mov ax, 00h 
 mov dx, 0x1F6 
@@ -470,8 +449,8 @@ dec ebx
 cmp ebx, 0
 jne loop97
 
-call _pollBSY 
-call _pollDRQ
+call isBSY 
+call isDRQ
 
 ;mov dx, 0x1F0 
 
@@ -490,7 +469,7 @@ call _pollDRQ
 ;out dx, al
 ;out dx, al
 
-;call _pollBSY 
+;call isBSY 
 ;call _pollDRDY
 
 mov dx, 0x1F7 
@@ -498,8 +477,8 @@ mov dx, 0x1F7
 mov ax, 0xA0 
 out dx, ax
 
-call _pollBSY 
-call _pollDRQ
+call isBSY 
+call isDRQ
 
 mov dx, 0x1f0
 mov al, 1Bh 
@@ -528,14 +507,14 @@ in eax, dx
 push eax
 call printStatus
 pop eax
-call _pollBSY
+call isBSY
 ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 _infocd:
 
-call _pollBSY
+call isBSY
 xor eax,eax
 xor ebx,ebx
 xor ecx,ecx
@@ -561,8 +540,8 @@ dec ebx
 cmp ebx, 0
 jne loop982
 
-call _pollBSY 
-call _pollDRQ
+call isBSY 
+call isDRQ
 
 mov dx, 0x1F0 
 mov al, 0xA8
@@ -601,15 +580,15 @@ out dx, al
 mov al, 0 
 out dx, al
 
-call _pollBSY 
+call isBSY 
 ;call _pollDRDY
 
 mov dx, 0x1F7 
 mov ax, 0xA0 
 out dx, ax
 
-call _pollBSY 
-call _pollDRQ
+call isBSY 
+call isDRQ
 
 mov dx, 0x1f0
 mov al, 0x25
@@ -634,7 +613,7 @@ push eax
 call printCapacity
 pop eax
 
-call _pollBSY
+call isBSY
 ret
 
 

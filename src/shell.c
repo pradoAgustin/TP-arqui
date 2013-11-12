@@ -263,6 +263,13 @@ void printReady()
 	return;
 }
 
+void printRegister(int dato)
+{
+	printf("%d\n", dato);
+	return;
+}
+
+
 void printbusy()
 {
 	printf("%s\n", "disk busy" );
