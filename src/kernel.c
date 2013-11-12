@@ -145,6 +145,8 @@ kmain()
 {int c;
 cursor = 0;
 prompt2 = 1;
+_initialize_cursor();
+
 
 initializeBuffer();
 initializeSpecialKeys();
