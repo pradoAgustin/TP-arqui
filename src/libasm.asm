@@ -300,13 +300,9 @@ vuelve: mov     ax, 1
         retn
 
 
-;section .bss
-;    buffer resb 64
-   ;///////////////////////////////////////////////////////////////////////////////////////////////////////
-
 _opencd:
 
-     call isBSY
+    call isBSY
 
     mov dx, 0x1f6
     mov al, 10h
