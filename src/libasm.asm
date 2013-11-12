@@ -80,7 +80,6 @@ _int_08_hand:               ; Handler de INT 8 ( Timer tick)
         iret
         
 _int_09_hand:               ; Handler de INT9 (Teclado)
-   
     pushad                  ; Buckupea todos los registros.
     pushf                    ; Backupea todos los flags.
     push cs
@@ -143,41 +142,32 @@ loop:
     ret
 
 read_segment_cs:
-    push ebp
-    mov ebp, esp
-
+    xor eax,eax
     mov eax, [registers+20];[esp+32]
-
-    mov esp, ebp
-    pop ebp
     ret
 
 read_segment_ss:
-    push ebp
-    mov ebp, esp
-
+    xor eax,eax
     mov eax, [registers+16];[esp+28]
-
-    mov esp, ebp
-    pop ebp
     ret
 
 read_segment_ds:
-
+    xor eax,eax
     mov eax, [registers+12];[esp+24]
     ret
 
 read_segment_es:
-
+    xor eax,eax
     mov eax, [registers+8];[esp+20]
     ret
 
 read_segment_fs:
-
+    xor eax,eax
     mov eax, [registers+4];[esp+16]
     ret
 
 read_segment_gs:
+    xor eax,eax
     mov eax, [registers];[esp+12]
     ret
 
@@ -209,13 +199,8 @@ read_register_esp:
     ret
 
 read_register_ebx:
-    push ebp
-    mov ebp, esp
-
+ 
     mov eax, [registers+44];[esp+56]
-
-    mov esp, ebp
-    pop ebp
     ret
 
 read_register_edx:
@@ -288,7 +273,10 @@ vuelve: mov     ax, 1
    ;///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 _opencd:
-
+xor eax,eax
+xor ebx,ebx
+xor ecx,ecx
+xor edx,edx
 call _pollBSY
 
 mov ax, 00h 
@@ -362,14 +350,13 @@ out dx, al
 out dx, al
 out dx, al
 out dx, al
-out dx, al
 
-;mov eax, 0
-;mov dx, 0x1f7
-;in eax, dx
-;push eax
-;call printStatus
-;pop eax
+mov eax, 0
+mov dx, 0x1f7
+in eax, dx
+push eax
+call printStatus
+pop eax
 
 call _pollBSY
 ret
@@ -385,8 +372,8 @@ ret
 _pollBSY:
 MOV DX, 1F7h 
 LOOP1:
-IN AL, DX 
-AND AL, 0x80
+IN AX, DX 
+AND AX, 0x80
 JNE LOOP1
 ret
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -396,8 +383,8 @@ ret
 _pollDRQ:
 MOV DX, 1F7h 
 LOOP4:
-IN AL, DX
-AND AL,0x08 
+IN ax, DX
+AND ax,0x08 
 JE LOOP4
 ret
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -414,7 +401,10 @@ ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 _closecd:
-
+xor eax,eax
+xor ebx,ebx
+xor ecx,ecx
+xor edx,edx
 call _pollBSY
 
 mov ax, 00h 
@@ -503,6 +493,108 @@ ret
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 _infocd:
+call _pollBSY
+xor eax,eax
+xor ebx,ebx
+xor ecx,ecx
+xor edx,edx
+
+mov ax, 00h 
+mov dx, 0x1F6 
+out dx, ax ; al puerto 1f6 mando un cero
+
+mov dx, 0x1F1
+mov ax, 0 
+out dx, ax ; al puerto 1f1 mando un cero
+
+;call _pollDRDY
+mov dx, 0x1F7 
+mov ax, 0xA0 
+out dx, ax ; al puerto 1f7 mando el A0
+
+; puede pasar q tarde un cacho 
+mov ebx, 65000
+loop982: 
+dec ebx
+cmp ebx, 0
+jne loop982
+
+call _pollBSY 
+call _pollDRQ
+
+mov dx, 0x1F0 
+mov al, 0xA8
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+mov al, 0 
+out dx, al
+
+call _pollBSY 
+;call _pollDRDY
+
+mov dx, 0x1F7 
+mov ax, 0xA0 
+out dx, ax
+
+call _pollBSY 
+call _pollDRQ
+
+mov dx, 0x1f0
+mov al, 0x25
+out dx, al
+mov al, 0 
+out dx, al
+out dx, al
+out dx, al
+out dx, al
+out dx, al
+out dx, al
+out dx, al
+out dx, al
+out dx, al
+out dx, al
+out dx,al
+
+mov eax, 0
+mov dx, 0x1f7
+in eax, dx
+push eax
+call printCapacity
+pop eax
+
+call _pollBSY
+ret
+
 
 
 

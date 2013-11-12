@@ -7,6 +7,7 @@ extern _cambiar_registros();
 extern _iniciar_contador();
 extern _contar_caracteres();
 extern _closecd();
+//extern _opencd_puerto2();
 
 void shell(){
 char s[20];
@@ -163,6 +164,7 @@ int clearup(){
 
 int opencd(){
 	_opencd();
+	//_opencd_puerto2();
 	printf("ya esta\n");
 }
 
@@ -231,6 +233,6 @@ int printNum(int num){
 	printf("%d",num);
 }
 
-void printCapacity(unsigned int lba, unsigned int blockLength){
-    printf("Capacity = %d", (lba+1)*blockLength);
+void printCapacity(unsigned int lba){
+    printf("Capacity = %d", (lba+1)*2000);
 }
