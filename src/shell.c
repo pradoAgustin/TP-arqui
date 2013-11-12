@@ -136,7 +136,7 @@ void testtres(){
 	int i = 0;
 	int result = 0;
 	_iniciar_contador();
-	while (i<15)
+	while (i<1500)
 	{
 		_delay();
 		result = _cuenta_super_complicada();
