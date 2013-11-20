@@ -134,7 +134,7 @@ void int_09(char c){
 			}
 		else if(c & 0x80)
 				return;
-		else if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.r_control == 1 || k.l_control==1) && c==(char)0x13){
+		else if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.l_control==1) && c==(char)0x13){
 			
 			k_clear_upper_screen();
 			print_registers();
@@ -143,12 +143,20 @@ void int_09(char c){
 		else if((k.r_shift==1 || k.l_shift==1) || k.Bloq_Mayus){
 			d=scanCodeToASCIIshifted(c);
 
-			if((((d-63) > 0 && (d-33)<0 )&& d!=10 && d!=32 && d!=8&& d!=15) || d == 42)
-			 	return; 
+			if((((d-63) > 0 && (d-33)<0 )&& d!=10 && d!=32 && d!=8&& d!=15) || d == 42 || d == 1)
+			 	return;
+			 // 	if((d-64<0 && d!=10 && d!=32 && d!=8&& d!=15) || d == 42)
+			 // 	{
+			 // 		return;  
+				// }
 			storeInBuffer(d);	
 			
 		}
-		else if(((d=scanCodeToASCII(c))-63 > 0 && ((d-33)<0 )&& d!=10 && d!=32 && d!=8 && d!=15)|| d == 42)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
+		// else if((((d=scanCodeToASCII(c))-80 < 0)&& d!=10 && d!=32 && d!=8 && d!=15)|| d == 42 || d == 1)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
+		// 	{
+		// 		return;
+		// 	}
+		else if(((d=scanCodeToASCII(c))-63 > 0 && ((d-33)<0 )&& d!=10 && d!=32 && d!=8 && d!=15)|| d == 42 || d == 1)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
 			return;
 		
 		else

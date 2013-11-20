@@ -13,11 +13,11 @@ extern _reiniciar_registros();
 void testscanf(void);
 
 void shell(){
-char s[20];
+char s[500];
 char lista[20][20];
 int i=0;
 int c;
-	while( ((c=getchar()) != '\n')){
+	while( ((c=getchar()) != '\n') && i<499){
 		if(c!=0){
 			if(c == '\b' && i >= 1){
 			i--;
@@ -39,6 +39,10 @@ int c;
 
 void parsecommand(char * s)
 {	
+		if(strlen(s) > 10)
+		{
+			return;
+		}
 		if(!strcmp(s,"man")){
 			man();
 		}
@@ -121,7 +125,7 @@ void testtres(){
 	int d=0;
 	printf("%s", "Apretar Ctrl + r y ver el cambio en los registros" );
 	_reiniciar_registros();
-	while(c<3300)
+	while(c<11000)
 		{
 			_delay();
 			// putc(25,1);
