@@ -73,7 +73,6 @@ void int_09(char c){
 		// w.ebp = read_register_ebp();
 		// w.esi = read_register_esi();
 		// w.edi = read_register_edi();
-		
 		w[0]= read_register_eax();
 		w[1] = read_register_ebx();
 		w[2] = read_register_ecx();
@@ -117,12 +116,12 @@ void int_09(char c){
 			k.l_control=0; // left control up code
 			return;
 			}
-		else if(c==(char)0xE0 && k.r_control==0 ){//11100000
-			k.r_control=1; //right control down code
-			return;
-			}
 		else if(c==(char)0xE0 && k.r_control==1 ) {//11100000 
 			k.r_control=0; // right control up code
+			return;
+			}
+		else if(c==(char)0xE0 && k.r_control==0 ){//11100000
+			k.r_control=1; //right control down code
 			return;
 			}
 		else if(c==(char)0x3A && k.Bloq_Mayus==0){//111010
@@ -135,7 +134,7 @@ void int_09(char c){
 			}
 		else if(c & 0x80)
 				return;
-		else if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.l_control==1) && c==(char)0x13){
+		else if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.r_control == 1 || k.l_control==1) && c==(char)0x13){
 			
 			k_clear_upper_screen();
 			print_registers();
