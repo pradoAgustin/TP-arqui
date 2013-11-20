@@ -32,6 +32,7 @@ int __write(int fd, char buffer, int count){
 **/
 int __read(int fd, char buffer, int count){
 int c=getBuffer();
+
 if(c == 0)
 	return 0;
 return c;

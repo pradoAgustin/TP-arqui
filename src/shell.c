@@ -9,6 +9,7 @@ extern _contar_caracteres();
 extern _closecd();
 extern _infoCD();
 extern _cuenta_super_complicada();
+extern _reiniciar_registros();
 void testscanf(void);
 
 void shell(){
@@ -76,6 +77,7 @@ void parsecommand(char * s)
 		if(!strcmp(s,"cleardown")){
 		clear_down();
 		}
+
 return;
 }	
 
@@ -102,31 +104,32 @@ return;
 }
 
 void testdos(){
-	int i = 0;
-	_iniciar_contador();
-	while (i<1300)
+	int c;
+	_reiniciar_registros();
+	while ((c = getchar()) != 'c')
 	{
 		_delay();
-		_contar_caracteres();
+		_cuenta_super_complicada();
 		putc(25,1);
-		i++;
 	}
+	printf("%s\n","fin de test" );
 	return;
 }
 
 void testtres(){
-	int i = 0;
-	int result = 0;
-	_iniciar_contador();
-	while (i<1500)
-	{
-		_delay();
-		result = _cuenta_super_complicada();
-		printf("%s","se esta ejecutando un calculo de alta complejidad, apretar ctrl+r para ver el resultado en ECX(el resultado varia con la espera)" );
-		i++;
-	}
+	int c=0;
+	int d=0;
+	printf("%s", "Apretar Ctrl + r y ver el cambio en los registros" );
+	_reiniciar_registros();
+	while(c<3300)
+		{
+			_delay();
+			// putc(25,1);
+			_cuenta_super_complicada();
+			c++;
+		}
 	printf("\n");
-	printf("%d\n", result);
+	printf("%s\n","fin de test" );
 	return;
 }
 
@@ -144,6 +147,7 @@ initialize_screen();
 
 
 int clear(){
+	_iniciar_contador();
 	k_clear_screen();
 	initialize_screen();
 }

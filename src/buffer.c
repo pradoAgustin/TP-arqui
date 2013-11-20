@@ -1,13 +1,14 @@
 #include "../include/kernel.h"
 #include "../include/buffer.h"
+extern _iniciar_contador();
 
 void storeInBuffer(int c){
 	if(buf.write==MAX_BUFFER){
 		buf.write=0;
 }
 	buf.vec[buf.write]=c;
-	buf.write++;	
-	
+	buf.write++;
+	_iniciar_contador();	
 return;
 }
 void initializeBuffer(){
@@ -22,8 +23,7 @@ int getBuffer(){
 		buf.read=0;
 	}
 	if(buf.read==buf.write){
-		buf.read=0;
-		buf.write=0;
+	initializeBuffer();
 		return 0;
 
 	}
@@ -31,3 +31,8 @@ int getBuffer(){
 		buf.read++;
 		return c;
 }
+// eax es 1 si getchar devuelve enter
+// eax es 0 si getchar devuelve distinto enter
+// ebx lo que yo quiera xq el sistema no lo usa
+// ecx strmcmp o lo que querramos 
+// edx read o write del buffer

@@ -6,6 +6,22 @@ IDTR idtr;				/* IDTR */
 int tickpos=640;
 #define WRITE 0
 #define READ 1
+extern _iniciar_contador();
+extern _initialize_cursor();
+// typedef struct{
+// 	int eax;
+// 	int ebx;
+// 	int ecx;
+// 	int edx;
+// 	int edi;
+// 	int esi;
+// 	int esp;
+// 	int ebp;
+// } registers;
+
+// registers w;
+int w[9];
+
 
 void initializeSpecialKeys(){
 	k.r_control=0;
@@ -16,14 +32,14 @@ void initializeSpecialKeys(){
 }
 
 
-void int_80(unsigned int sysCall, unsigned int arg1, int arg2, int arg3, int arg4, int arg5){
-   if(sysCall==WRITE)
-            __write((int)arg1, (void *)arg2, (int)arg3);
+// void int_80(unsigned int sysCall, unsigned int arg1, int arg2, int arg3, int arg4, int arg5){
+//    if(sysCall==WRITE)
+//             __write((int)arg1, (void *)arg2, (int)arg3);
            
-    else if(sysCall==READ) 
-            __read((int)arg1, (void *)arg2,(int)arg3);
+//     else if(sysCall==READ) 
+//             __read((int)arg1, (void *)arg2,(int)arg3);
     
-}
+// }
 
 
 void int_08() {
@@ -35,11 +51,12 @@ void int_08() {
 void int_09(char c){
 		int flag;
 		int bit=1;
-		flag = read_flags();
-		flags[0]=flag<<2 & bit;
-		flags[1]=flag<<6 & bit;
-		flags[2]=flag<<9 & bit;
-		flags[3]=flag<<21 & bit;
+
+		// flag = read_flags();
+		// flags[0]=flag<<2 & bit;
+		// flags[1]=flag<<6 & bit;
+		// flags[2]=flag<<9 & bit;
+		// flags[3]=flag<<21 & bit;
 
 		s.cs = read_segment_cs();
 		s.ss = read_segment_ss();
@@ -48,15 +65,24 @@ void int_09(char c){
 		s.fs = read_segment_fs();
 		s.gs = read_segment_gs();
 
-		w.eax = read_register_eax();
-		w.ebx = read_register_ebx();
-		w.ecx = read_register_ecx();
-		w.edx = read_register_edx();
-		w.esp = read_register_esp();
-		w.ebp = read_register_ebp();
-		w.esi = read_register_esi();
-		w.edi = read_register_edi();
+		// w.eax = read_register_eax();
+		// w.ebx = read_register_ebx();
+		// w.ecx = read_register_ecx();
+		// w.edx = read_register_edx();
+		// w.esp = read_register_esp();
+		// w.ebp = read_register_ebp();
+		// w.esi = read_register_esi();
+		// w.edi = read_register_edi();
 			
+
+		w[0]= read_register_eax();
+		w[1] = read_register_ebx();
+		w[2] = read_register_ecx();
+		w[3] = read_register_edx();
+		w[4] = read_register_esp();
+		w[5] = read_register_ebp();
+		w[6] = read_register_esi();
+		w[7] = read_register_edi();
 		char d,a;
 
 
@@ -119,12 +145,12 @@ void int_09(char c){
 		else if((k.r_shift==1 || k.l_shift==1) || k.Bloq_Mayus){
 			d=scanCodeToASCIIshifted(c);
 
-			 if(d-64<0 && d!=10 && d!=32 && d!=8&& d!=15)
+			if((((d-63) > 0 && (d-33)<0 )&& d!=10 && d!=32 && d!=8&& d!=15) || d == 42)
 			 	return; 
 			storeInBuffer(d);	
 			
 		}
-		else if((d=scanCodeToASCII(c))-80<0 && d!=10 && d!=32 && d!=8 && d!=15)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
+		else if(((d=scanCodeToASCII(c))-63 > 0 && ((d-33)<0 )&& d!=10 && d!=32 && d!=8 && d!=15)|| d == 42)//10 ascii del enter, 32 del espacio,08 del backspace,15 tab
 			return;
 		
 		else
@@ -142,12 +168,9 @@ Punto de entrada de cóo C.
 kmain() 
 {int c;
 cursor = 0;
-prompt2 = 1;
-_initialize_cursor();
-
-
-initializeBuffer();
 initializeSpecialKeys();
+_initialize_cursor();
+initializeBuffer();
 /* Borra la pantalla. */ 
 
 	k_clear_screen();
@@ -157,7 +180,7 @@ initializeSpecialKeys();
 
         setup_IDT_entry (&idt[0x08], 0x08, (dword)&_int_08_hand, ACS_INT, 0);
 		setup_IDT_entry (&idt[0x09], 0x08, (dword)&_int_09_hand, ACS_INT, 0);
-		setup_IDT_entry (&idt[0x80], 0x08, (dword)&_int_80_hand, ACS_INT, 0);
+	//	setup_IDT_entry (&idt[0x80], 0x08, (dword)&_int_80_hand, ACS_INT, 0);
 
 /* Carga de IDTR    */
 

@@ -34,6 +34,7 @@ void enter(){
 	}else
 	cursor += 160 - cursor%160;
 	prompt();
+	initializeBuffer();
 }
  
 /***************************************************************
@@ -52,7 +53,7 @@ int i,puedeBorrar=1;
 		if(cursor==(13*2+160*i))
 			puedeBorrar=0;
 	}
-	if(puedeBorrar || !prompt2){			
+	if(puedeBorrar){			
 		cursor -=2;
 		char* videomem = (char *)(POSITION + cursor) ;
 		videomem[0] = ' '; 
@@ -67,6 +68,5 @@ int i,puedeBorrar=1;
 ****************************************************************/
 void prompt(void){
 	printf("%s","wachiturrOS: ");
-	prompt2=1;
 }
 

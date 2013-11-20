@@ -1,5 +1,6 @@
 GLOBAL  _read_msw,_lidt
-GLOBAL  _int_08_hand, _int_09_hand, _int_80_hand
+GLOBAL  _int_08_hand, _int_09_hand
+;GLOBAL _int_80_hand
 GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
 GLOBAL outportb
@@ -11,7 +12,8 @@ GLOBAL _iniciar_contador
 GLOBAL _contar_caracteres
 GLOBAL _initialize_cursor
 GLOBAL _cuenta_super_complicada
-EXTERN  int_08, int_09, int_80
+EXTERN  int_08, int_09
+;EXTERN int_80
 EXTERN printStatus
 GLOBAL  _printError
 EXTERN printNum
@@ -20,6 +22,8 @@ EXTERN printCapacity
 EXTERN printReady
 EXTERN printRegister
 EXTERN printbusy
+GLOBAL _inc_b
+GLOBAL _reiniciar_registros
 
 SECTION .bss
     registers resb 70
@@ -87,41 +91,45 @@ _int_08_hand:               ; Handler de INT 8 ( Timer tick)
         pop     ds
         iret
         
-_int_09_hand:               ; Handler de INT9 (Teclado)
-   
+_int_09_hand:               ; Handler de INT9 (Teclado) 
     pushad                  ; Buckupea todos los registros.
-    push cs
     push ss
     push ds
     push es
     push fs
     push gs                  
-    mov eax,0
-    in al,060h              ; Le pido el scancode al teclado.
     call _store_registers
+    xor eax,eax
+    in al,060h              ; Le pido el scancode al teclado.
     push eax
 
     call int_09
     pop eax
-    add esp,24
+    add esp,20
     mov al,20h              ; Le mando el EOI generico al PIC.
     out 20h,al
     popad                   ; Restauro todos los registros.
     iretd
 
-_int_80_hand:
-    push ebp
-    mov ebp, esp
-    push edi
-    push esi
-    push edx
-    push ecx
-    push ebx
-    push eax
-    call int_80
-    mov esp, ebp
-    pop ebp
-    iret
+;_int_80_hand:
+ ;   push ebp
+ ;   mov ebp, esp
+  ;  push edi
+  ;  push esi
+  ;  push edx
+  ;  push ecx
+  ;  push ebx
+  ;  push eax
+  ;  call int_80
+  ;  pop eax
+  ;  pop ebx
+  ;  pop ecx
+  ;  pop edx
+  ;  pop esi
+  ;  pop edi
+  ;  mov esp, ebp
+  ;  pop ebp
+  ;  iret
 
 
 outportb:
@@ -162,53 +170,49 @@ loop:
     ret
 
 read_segment_cs:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [registers+20]
-
-    mov esp, ebp
-    pop ebp
+    
+    xor eax,eax
+    mov ax, [registers+56]
     ret
 
 read_segment_ss:
-    push ebp
-    mov ebp, esp
-
-    mov eax, [registers+16]
-
-    mov esp, ebp
-    pop ebp
+    xor eax,eax
+    mov ax, [registers+16]
     ret
 
 read_segment_ds:
 
-    mov eax, [registers+12]
+    xor eax,eax
+    mov ax, [registers+12]
     ret
 
 read_segment_es:
 
-    mov eax, [registers+8]
+    xor eax,eax
+    mov ax, [registers+8]
     ret
 
 read_segment_fs:
 
-    mov eax, [registers+4]
+    xor eax,eax
+    mov ax, [registers+4]
     ret
 
 read_segment_gs:
-    mov eax, [registers]
+    
+    xor eax,eax
+    mov ax, [registers]
     ret
 
 read_register_edi:
     
-    mov eax, [registers+24]
+    mov eax, [registers+32]
     ret
 
-read_flags:
+;read_flags:
     
-    mov eax, [registers+64]
-    ret
+    ;mov eax, [registers+64]
+    ;ret
  
 read_register_esi:
    
@@ -217,42 +221,54 @@ read_register_esi:
 
 read_register_ebp:
 
-    mov eax, [registers+32]
+    mov eax, [registers+20]
     ret
 
 read_register_esp:
  
-    mov eax, [registers+36]
+    mov eax, [registers+24]
     ret
 
 read_register_ebx:
 
-    mov eax, [registers+40]
+    mov eax, [registers+36]
     ret
 
 read_register_edx:
  
-    mov eax, [registers+44]
+    mov eax, [registers+40]
     ret
 
 read_register_ecx:
    
-    mov eax, [registers+48]
+    mov eax, [registers+44]
     ret
 
 read_register_eax:
    
-    mov eax, [registers+52]
+    mov eax, [registers+48]
     ret
 _iniciar_contador:
-    xor ecx,ecx
+    mov ebx,0
+    ret
+_inc_b:
+    inc ebx
     ret
 _contar_caracteres:
     add ecx,1
     ret
+
+_reiniciar_registros:
+    xor eax,eax
+    mov ebx,0
+    mov ecx,1
+    mov edx,2
+    ret
 _cuenta_super_complicada:
-    add ecx,3
-    mov eax,ecx
+    inc eax
+    inc ebx
+    inc ecx
+    inc edx
     ret
 
 _delay:

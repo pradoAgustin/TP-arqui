@@ -3,6 +3,7 @@
 #include "../include/kc.h"
 #include "../include/stdarg.h"
 #include "../include/buffer.h"
+extern _inc_b();
 int printf( char * fmt, ...);
 /***************************************************************
 *  Funciones de entrada y salida de caracteres
@@ -30,7 +31,6 @@ int getc(FILE * stream){
 *  putc (si)
 ****************************************************************/
 int putc(char c, FILE * stdout){
-	
 	int i=0 ;
 	if(c=='\b')
 	{	
@@ -50,6 +50,7 @@ int putc(char c, FILE * stdout){
 	update_cursor();
 	if(stdout==(FILE *)1 && c!=0){
 		__write(1,c,1);
+		_inc_b();
 	}	
 	
 cursor+=i;
@@ -215,7 +216,7 @@ int printf( char * fmt, ...){
 				break;
 			case 'c':
 				ival= va_arg(ap,int);	
-				if(cursor == (80*2*25)){cursor=80*24*2;k_scroll();prompt2=0;}				
+				 if(cursor == (80*2*25)){cursor=80*24*2;k_scroll();}				
 					putc(ival,(char*)1);//(POSITION+cursor));//NOOOOOOOOOOOOOO
 					break;
 			case 's':

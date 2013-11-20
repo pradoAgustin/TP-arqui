@@ -67,16 +67,6 @@ typedef struct {
 } IDTR;
 
 
-typedef struct{
-	int eax;
-	int ebx;
-	int ecx;
-	int edx;
-	int edi;
-	int esi;
-	int esp;
-	int ebp;
-} registers;
 
 typedef struct{
         int r_shift;
@@ -97,7 +87,7 @@ typedef struct{
      
 specialKeys k;
 segments s;
-registers w;
+
 
 #endif
 
