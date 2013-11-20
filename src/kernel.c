@@ -73,8 +73,7 @@ void int_09(char c){
 		// w.ebp = read_register_ebp();
 		// w.esi = read_register_esi();
 		// w.edi = read_register_edi();
-			
-
+		
 		w[0]= read_register_eax();
 		w[1] = read_register_ebx();
 		w[2] = read_register_ecx();
@@ -136,7 +135,7 @@ void int_09(char c){
 			}
 		else if(c & 0x80)
 				return;
-		else if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.r_control == 1 || k.l_control==1) && c==(char)0x13){
+		else if(!(k.r_shift==1  || k.l_shift==1  ||k.Bloq_Mayus) && (k.l_control==1) && c==(char)0x13){
 			
 			k_clear_upper_screen();
 			print_registers();
@@ -171,6 +170,7 @@ cursor = 0;
 initializeSpecialKeys();
 _initialize_cursor();
 initializeBuffer();
+
 /* Borra la pantalla. */ 
 
 	k_clear_screen();
